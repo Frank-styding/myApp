@@ -1,13 +1,22 @@
-import { config } from "@gluestack-ui/config";
-import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { ErrorModalProvider } from "@/hooks/ErrorModalProvider";
+import { ReturnModalProvider } from "@/hooks/ReturnModalProvider";
 import { Stack } from "expo-router";
-import { SafeAreaView } from "react-native";
+import { View } from "react-native";
+import tw from "twrnc";
+
 export default function Layout() {
   return (
-    <GluestackUIProvider config={config}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }} />
-      </SafeAreaView>
-    </GluestackUIProvider>
+    <ReturnModalProvider>
+      <ErrorModalProvider>
+        <View style={tw`flex-1`}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: tw`bg-[#2d2d35]`,
+            }}
+          />
+        </View>
+      </ErrorModalProvider>
+    </ReturnModalProvider>
   );
 }

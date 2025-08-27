@@ -1,5 +1,5 @@
-import { Colors, select_options, STATES } from "@/constants/constants";
-import { useChangeModal } from "@/hooks/ChangeModalProvider";
+// components/modals/ChangeModal.tsx
+import { useModalContext } from "@/providers/ModalProvider";
 import { useAppState } from "@/store/store";
 import { useState } from "react";
 import { Image, Modal, Pressable, Text, View } from "react-native";
@@ -7,27 +7,31 @@ import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
 import { Picker } from "../ui/Picker";
 import { useSaveData } from "@/hooks/useSaveData";
+import { Colors, select_options, STATES } from "@/constants/constants";
+
 export const ChangeModal = () => {
-  const { hideModal, visible } = useChangeModal();
+  const { hideModal, modals } = useModalContext();
   const { data, setValue } = useAppState();
   const [option, setOption] = useState<string>();
   const { saveData } = useSaveData();
+
   const handleClick = () => {
-    saveData(STATES["fin jornada"], undefined, { ...data });
+    saveData(STATES["finJornada"], undefined, { ...data });
     setValue({ ...data, value: option }, () => {
       saveData(STATES["trabajando"], undefined, { ...data, value: option });
-      hideModal();
+      hideModal("change");
     });
   };
+
   return (
-    <Modal transparent visible={visible} animationType="fade">
+    <Modal transparent visible={modals.change.visible} animationType="fade">
       <Pressable
-        onPress={() => hideModal()}
+        onPress={() => hideModal("change")}
         style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
       >
         <Pressable
           style={tw`bg-[${Colors.black2}] w-72 rounded-xl w-85 py-7 gap-5 items-center`}
-          onPress={() => {}}
+          onPress={(e) => e.stopPropagation()}
         >
           <Image
             source={require("@/assets/changeIcon.png")}

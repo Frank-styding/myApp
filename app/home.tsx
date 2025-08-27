@@ -9,9 +9,9 @@ import {
   STATES,
   button_options,
 } from "@/constants/constants";
-import { useChangeModal } from "@/hooks/ChangeModalProvider";
-import { useReturnModal } from "@/hooks/ReturnModalProvider";
+import { useModal } from "@/hooks/useModal";
 import { useSaveData } from "@/hooks/useSaveData";
+import { useModalContext } from "@/providers/ModalProvider";
 import { useAppState } from "@/store/store";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -43,8 +43,7 @@ function ChangeButton({
 }
 
 export default function Home() {
-  const { showModal } = useReturnModal();
-  const { showModal: showChangeModal } = useChangeModal();
+  const { showModal } = useModalContext();
   const { saveData } = useSaveData();
   const [active, setActive] = useState(false);
   const router = useRouter();
@@ -58,16 +57,16 @@ export default function Home() {
     }
     if (key === "button_2") {
       setValue({});
-      saveData(STATES["fin jornada"]);
+      saveData(STATES["finJornada"]);
       router.replace("/");
       return;
     }
-    showModal(Messages[key]);
+    showModal("return", Messages[key]);
     saveData(key);
   };
 
   const onChange = () => {
-    showChangeModal();
+    showModal("change");
   };
 
   const onReturn = () => {

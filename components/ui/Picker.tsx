@@ -37,6 +37,7 @@ export const Picker = ({
   const [visible, setVisible] = useState(false);
   return (
     <View style={tw`items-center justify-center`}>
+      {/* Selector */}
       <Pressable
         onPress={() => setVisible(true)}
         style={[
@@ -60,6 +61,7 @@ export const Picker = ({
         <Ionicons name="chevron-down" size={20} color={`${Colors.black1}`} />
       </Pressable>
 
+      {/* Modal */}
       <Modal transparent visible={visible} animationType="fade">
         <Pressable
           onPress={() => setVisible(false)}

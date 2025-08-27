@@ -1,203 +1,164 @@
-import { useAppState } from "@/store/store";
 import NetInfo from "@react-native-community/netinfo";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  AppState,
-  AppStateStatus,
-  PermissionsAndroid,
-  Platform,
-} from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
+import { useEffect, useRef, useState, useCallback } from "react";
 import BackgroundService from "react-native-background-actions";
+import { sendData } from "@/lib/SendData";
+import { useAppState, QueueItem } from "@/store/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface BackgroundTaskOptions {
-  taskName?: string;
-  taskTitle?: string;
-  taskDesc?: string;
-  delay?: number;
-}
+const BATCH_RETRY_KEY = "batchRetryCount";
 
-export const useBackgroundSync = (
-  backgroundSendTask: (taskData?: any) => Promise<void>,
-  options: BackgroundTaskOptions = {}
-) => {
-  // Valores por defecto para las opciones
-  const {
-    taskName = "EnviarDatosBackground",
-    taskTitle = "Enviando datos...",
-    taskDesc = "Enviando datos pendientes en segundo plano",
-    delay = 5000,
-  } = options;
+// Cargar contadores persistentes
+const loadBatchRetryCount = async (): Promise<Map<string, number>> => {
+  try {
+    const stored = await AsyncStorage.getItem(BATCH_RETRY_KEY);
+    return new Map(JSON.parse(stored || "[]"));
+  } catch {
+    return new Map();
+  }
+};
 
-  const { requests } = useAppState();
+// Guardar contadores persistentes
+const saveBatchRetryCount = async (count: Map<string, number>) => {
+  await AsyncStorage.setItem(BATCH_RETRY_KEY, JSON.stringify([...count]));
+};
 
-  const [isOnline, setIsOnline] = useState(false);
-  const [isBackgroundTaskRunning, setIsBackgroundTaskRunning] = useState(false);
-  const [hasPendingData, setHasPendingData] = useState(false);
-  const [appState, setAppState] = useState<AppStateStatus>(
-    AppState.currentState
-  );
-  const [hasPermissions, setHasPermissions] = useState<boolean>(
-    Platform.OS === "ios"
-  );
+const processPendingRequests = async () => {
+  const { requests, deleteRequest } = useAppState.getState();
+  if (requests.length === 0) return;
+
+  const batchRetryCount = await loadBatchRetryCount();
+  console.log(`[TASK]:Procesando ${requests.length} requests pendientes...`);
+  // Agrupar requests por lugar y DNI
+  const groupedRequests: Record<string, Record<string, QueueItem[]>> = {};
+
+  requests.forEach((item) => {
+    if (!groupedRequests[item.place]) groupedRequests[item.place] = {};
+    if (!groupedRequests[item.place][item.dni])
+      groupedRequests[item.place][item.dni] = [];
+    groupedRequests[item.place][item.dni].push(item);
+  });
+
+  for (const place in groupedRequests) {
+    for (const dni in groupedRequests[place]) {
+      const batch = groupedRequests[place][dni];
+      const batchId = `${place}-${dni}`;
+
+      try {
+        const { name } = batch[0];
+
+        // solo enviar si hay internet
+        const state = await NetInfo.fetch();
+        if (!(state.isConnected && state.isInternetReachable)) {
+          console.log("[TASK]: Sin conexión, esperando...");
+          continue;
+        }
+
+        const result = await sendData({
+          dni,
+          place,
+          name,
+          data: batch.map((item) => ({
+            time: item.time,
+            state: item.state,
+            id: item.id,
+          })),
+        });
+
+        if (result.ok) {
+          batch.forEach((item) => deleteRequest(item.id));
+          batchRetryCount.delete(batchId);
+          console.log(`[TASK]:✅ Batch ${batchId} enviado exitosamente`);
+        } else {
+          const currentCount = batchRetryCount.get(batchId) || 0;
+          batchRetryCount.set(batchId, currentCount + 1);
+          console.log(
+            `[TASK]:❌ Error en batch ${batchId}. Reintentos: ${
+              currentCount + 1
+            }`
+          );
+        }
+      } catch (error) {
+        const currentCount = batchRetryCount.get(batchId) || 0;
+        batchRetryCount.set(batchId, currentCount + 1);
+        console.error(`[TASK]:⚠️ Error en batch ${batchId}:`, error);
+      }
+      await saveBatchRetryCount(batchRetryCount);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+};
+
+export const backgroundSendTask = async (taskData?: { delay: number }) => {
+  const { delay } = taskData ?? { delay: 1000 }; // valor por defecto
+  while (await BackgroundService.isRunning()) {
+    try {
+      const { requests } = useAppState.getState();
+      console.log(requests);
+      if (requests.length === 0) {
+        await new Promise((r) => setTimeout(r, delay)); // usa el mismo delay que definiste
+        continue;
+      }
+      await processPendingRequests();
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    } catch (err) {
+      console.error("[TASK]:Error en background task:", err);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+};
+
+export const useBackgroundSync = () => {
+  const [isRunning, setIsRunning] = useState(false);
   const taskRunningRef = useRef(false);
-  const wasOfflineRef = useRef(!isOnline); // Referencia para rastrear cambios de conectividad
 
-  // Verificar y solicitar permisos al montar el componente
-  useEffect(() => {
-    checkPermissions();
+  const checkPermissions = useCallback(async () => {
+    if (Platform.OS === "android" && Platform.Version >= 33) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true; // en iOS o Android < 13 no hace falta
   }, []);
-
-  // Verificar datos pendientes cuando cambia la cola
-  useEffect(() => {
-    const pending = requests.some((item) => (item.attempts || 0) < 5);
-    setHasPendingData(pending);
-  }, [requests]);
 
   const startBackgroundTask = useCallback(async () => {
     if (taskRunningRef.current) return;
 
-    console.log("Iniciando tarea en segundo plano");
+    const options = {
+      taskName: "DataSyncTask",
+      taskTitle: "Sincronizando datos",
+      taskDesc: "Enviando datos pendientes...",
+      taskIcon: { name: "ic_launcher", type: "mipmap" },
+      color: "#00ff00",
+      parameters: { delay: 15000 },
+      ...(Platform.OS === "android" && {
+        notificationId: 123,
+        notificationChannel: "BackgroundSync",
+      }),
+    };
 
     try {
-      const taskOptions = {
-        taskName,
-        taskTitle,
-        taskDesc,
-        taskIcon: {
-          name: "ic_launcher",
-          type: "mipmap",
-        },
-        color: "#ff00ff",
-        parameters: {
-          delay,
-        },
-        // Añade esta configuración para ejecución periódica
-        linkingURI: "yourappscheme://background", // Esquema de tu app
-        // Opcional: configuración para Android
-        ...(Platform.OS === "android" && {
-          // Importante para Android 8+
-          notificationId: 1234,
-          notificationChannel: "BackgroundTaskChannel",
-        }),
-      };
-
-      await BackgroundService.start(backgroundSendTask, taskOptions);
+      await BackgroundService.start(backgroundSendTask, options);
       taskRunningRef.current = true;
-      setIsBackgroundTaskRunning(true);
-      console.log("Servicio en segundo plano iniciado");
-    } catch (error) {
-      console.error("Error iniciando servicio en segundo plano:", error);
+      setIsRunning(true);
+      console.log("[TASK]:🚀 Servicio en segundo plano iniciado");
+    } catch (e) {
+      console.error("[TASK]:Error iniciando servicio:", e);
     }
-  }, [backgroundSendTask, taskName, taskTitle, taskDesc, delay]);
-  // Configurar listener de conectividad
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      const onlineStatus = state.isConnected && state.isInternetReachable;
-      const wasOffline = wasOfflineRef.current;
-
-      // Actualizar el estado de conexión
-      setIsOnline(onlineStatus || false);
-
-      // Si la aplicación está en segundo plano, hay datos pendientes, permisos,
-      // y la conexión cambió de offline a online, iniciar la tarea
-      if (
-        appState === "background" &&
-        hasPendingData &&
-        hasPermissions &&
-        onlineStatus &&
-        wasOffline &&
-        !taskRunningRef.current
-      ) {
-        startBackgroundTask();
-      }
-
-      // Actualizar la referencia para el próximo cambio
-      wasOfflineRef.current = !onlineStatus;
-    });
-
-    return unsubscribe;
-  }, [appState, hasPendingData, hasPermissions, startBackgroundTask]);
-
-  // Verificar y solicitar permisos
-  const checkPermissions = useCallback(async () => {
-    if (Platform.OS === "android") {
-      try {
-        // Verificar y solicitar permiso para notificaciones (necesario para Android 13+)
-        if (Platform.Version >= 33) {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
-          );
-          setHasPermissions(granted === PermissionsAndroid.RESULTS.GRANTED);
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
-
-        // Para versiones anteriores de Android, asumimos que tenemos permisos
-        setHasPermissions(true);
-        return true;
-      } catch (err) {
-        console.error("Error verificando permisos:", err);
-        setHasPermissions(false);
-        return false;
-      }
-    }
-
-    // iOS maneja los permisos de forma diferente, generalmente a través de prompts del sistema
-    setHasPermissions(true);
-    return true;
   }, []);
 
   const stopBackgroundTask = useCallback(async () => {
     try {
       await BackgroundService.stop();
       taskRunningRef.current = false;
-      setIsBackgroundTaskRunning(false);
-      console.log("Servicio en segundo plano detenido");
-    } catch (error) {
-      console.error("Error deteniendo servicio:", error);
+      setIsRunning(false);
+      console.log("[TASK]:🛑 Servicio detenido");
+    } catch (e) {
+      console.error("[TASK]:Error deteniendo servicio:", e);
     }
   }, []);
 
-  const handleAppStateChange = useCallback(
-    (nextAppState: AppStateStatus) => {
-      // Si la aplicación pasa a segundo plano y hay datos pendientes, conexión y permisos
-      if (
-        nextAppState === "background" &&
-        hasPendingData &&
-        isOnline &&
-        hasPermissions &&
-        !taskRunningRef.current
-      ) {
-        startBackgroundTask();
-      }
-      // Si la aplicación vuelve a primer plano, detener la tarea
-      else if (nextAppState === "active" && taskRunningRef.current) {
-        stopBackgroundTask();
-      }
-
-      setAppState(nextAppState);
-    },
-    [
-      hasPendingData,
-      isOnline,
-      hasPermissions,
-      startBackgroundTask,
-      stopBackgroundTask,
-    ]
-  );
-
-  // Escuchar cambios en el estado de la aplicación
-  useEffect(() => {
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, [handleAppStateChange]);
-
-  // Limpieza al desmontar el componente
   useEffect(() => {
     return () => {
       if (taskRunningRef.current) {
@@ -207,13 +168,9 @@ export const useBackgroundSync = (
   }, [stopBackgroundTask]);
 
   return {
-    isOnline,
-    hasPendingData,
-    isBackgroundTaskRunning,
-    appState,
-    hasPermissions,
-    checkPermissions,
+    isRunning,
     startBackgroundTask,
     stopBackgroundTask,
+    checkPermissions,
   };
 };

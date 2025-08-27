@@ -3,7 +3,7 @@ import { ButtonText } from "@/components/ui/ButtonText";
 import { Input } from "@/components/ui/Input";
 import { Picker } from "@/components/ui/Picker";
 import { select_options } from "@/constants/constants";
-import { useErrorModal } from "@/hooks/ErrorModalProvider";
+import { useModalContext } from "@/providers/ModalProvider";
 import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -16,8 +16,7 @@ export default function Loggin() {
     name?: string;
     dni?: string;
   }>({});
-  const { showModal } = useErrorModal();
-
+  const { showModal } = useModalContext();
   const router = useRouter();
   const { setValue } = useAppState();
 
@@ -28,9 +27,12 @@ export default function Loggin() {
   }, []);
 
   const onClick = () => {
-    if (!data.dni || !data.name || !data.value) return;
+    if (!data.dni || !data.name || !data.value) {
+      showModal("error", "Por favor complete todos los campos");
+      return;
+    }
     if (data.dni.length < 8) {
-      showModal("El DNI debe contar con 8 caracteres");
+      showModal("error", "El DNI debe contar con 8 caracteres");
       return;
     }
 

@@ -1,3 +1,4 @@
+import withBackgroundService from "./withBackgroundService";
 export default {
   expo: {
     name: "myApp",
@@ -27,15 +28,9 @@ export default {
       edgeToEdgeEnabled: true,
       package: "com.frank50pa1.myApp",
     },
-    web: {
-      // ! NOT WILL BE IMPLEMENTED
-      bundler: "metro",
-      output: "static",
-      favicon: "./assets/images/favicon.png",
-    },
     plugins: [
       "expo-router",
-      "expo-background-task",
+      withBackgroundService,
       [
         "expo-splash-screen",
         {

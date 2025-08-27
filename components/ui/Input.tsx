@@ -22,10 +22,8 @@ export const Input = ({
   return (
     <TextInput
       style={[
-        {
-          fontFamily: fontFamily || Fonts["Poppins-Bold"],
-        },
-        tw`bg-[${Colors.light3}]  w-full h-10 rounded-[8px] pl-3 text-[16px] text-[${Colors.black}] font-bold `,
+        { fontFamily: fontFamily || Fonts["Poppins-Bold"] },
+        tw`bg-[${Colors.light3}] w-full h-10 rounded-[8px] pl-3 text-[16px] text-[${Colors.black}] font-bold `,
         style,
       ]}
       keyboardType={keyboardType}

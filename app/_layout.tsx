@@ -1,11 +1,6 @@
 import { Colors, fontsMap } from "@/constants/constants";
-import { ChangeModalProvider } from "@/hooks/ChangeModalProvider";
-import { ErrorModalProvider } from "@/hooks/ErrorModalProvider";
-import { ReturnModalProvider } from "@/hooks/ReturnModalProvider";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync ";
-import { useInternetConnectionHandler } from "@/hooks/useInternetConnection";
-import { ValidationModalProvider } from "@/hooks/ValidationModalProvider";
-import { backgroundSendTask } from "@/tasks/backgroundSync";
+import { ModalProvider } from "@/providers/ModalProvider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { useEffect } from "react";
@@ -14,24 +9,16 @@ import tw from "twrnc";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts(fontsMap);
-  const { checkPermissions, isBackgroundTaskRunning } = useBackgroundSync(
-    backgroundSendTask,
-    {
-      taskName: "DataSyncTask",
-      taskTitle: "Sincronizando datos",
-      taskDesc: "Enviando datos pendientes...",
-      delay: 15000,
-    }
-  );
-  useInternetConnectionHandler(isBackgroundTaskRunning);
+  const { checkPermissions, startBackgroundTask } = useBackgroundSync();
   useEffect(() => {
     checkPermissions().then((granted) => {
       if (!granted) {
         Alert.alert(
           "Permisos necesarios",
-          "La aplicación necesita permisos para ejecutar en segundo plano. Por favor, concede los permisos necesarios en la configuración de la aplicación.",
-          [{ text: "OK" }]
+          "Necesitas conceder permisos de notificaciones para sincronizar en segundo plano."
         );
+      } else {
+        startBackgroundTask(); // arranca la sync en segundo plano
       }
     });
   }, []);
@@ -41,26 +28,20 @@ export default function Layout() {
   }
 
   return (
-    <ChangeModalProvider>
-      <ValidationModalProvider>
-        <ReturnModalProvider>
-          <ErrorModalProvider>
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ flexGrow: 1 }}
-            >
-              <View style={tw`flex-1`}>
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: tw`bg-[${Colors.background}]`,
-                  }}
-                />
-              </View>
-            </ScrollView>
-          </ErrorModalProvider>
-        </ReturnModalProvider>
-      </ValidationModalProvider>
-    </ChangeModalProvider>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
+      <View style={tw`flex-1`}>
+        <ModalProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: tw`bg-[${Colors.background}]`,
+            }}
+          />
+        </ModalProvider>
+      </View>
+    </ScrollView>
   );
 }

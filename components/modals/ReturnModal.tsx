@@ -1,9 +1,13 @@
-import { useReturnModal } from "@/hooks/ReturnModalProvider";
+// components/modals/ReturnModal.tsx
+import { useModalContext } from "@/providers/ModalProvider";
 import { Image, Modal, Text, View } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
+
 export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
-  const { visible, title, message, hideModal } = useReturnModal();
+  const { modals, hideModal } = useModalContext();
+  const { visible, title, message } = modals.return;
+
   return (
     <Modal transparent visible={visible} animationType="fade">
       <View style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}>
@@ -26,7 +30,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             style={tw`w-[70%] p-0 py-4 items-center mt-4`}
             textStyle={tw`text-[18px]`}
             onClick={() => {
-              hideModal();
+              hideModal("return");
               onClick?.();
             }}
           />

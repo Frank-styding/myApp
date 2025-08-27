@@ -1,3 +1,4 @@
+// ==================== FONTS ====================
 export const fontsMap = {
   "Lato-Bold": require("../assets/fonts/Lato-Bold.ttf"),
   "Lato-Light": require("../assets/fonts/Lato-Light.ttf"),
@@ -5,39 +6,43 @@ export const fontsMap = {
   "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
 };
 
-export const Fonts = {
+export const Fonts: Record<keyof typeof fontsMap, string> = {
   "Lato-Bold": "Lato-Bold",
   "Lato-Light": "Lato-Light",
   "Poppins-Bold": "Poppins-Bold",
   "Poppins-Light": "Poppins-Light",
 };
 
+// ==================== COLORS ====================
 export const Colors = {
   primary: "#D5FF5F",
   background: "#2D2D35",
   black: "#000000",
-  light0: "#ffffff",
+  light0: "#FFFFFF",
   light1: "#CECECE",
   light3: "#BABABA",
   black1: "#464646",
   black2: "#656565",
 };
 
+// ==================== STATES ====================
 export const STATES = {
   trabajando: "trabajando",
-  "fin jornada": "fin jornada",
+  finJornada: "fin jornada",
 };
 
+// ==================== BUTTON OPTIONS ====================
 export const button_options = [
   { label: "Almuerzo", value: "almuerzo" },
   { label: "Falta de materiales", value: "materiales" },
   { label: "Traslados internos", value: "traslado interno" },
-  { label: "Causas Climatólogicas", value: "problemas climaticos" },
+  { label: "Causas climatológicas", value: "problemas climaticos" },
   { label: "Charlas & Reuniones", value: "charla" },
-  { label: "Pausas Activas", value: "pausa" }, //! change to "pausa activa"
-  { label: "Falta de Materia prima", value: "materia prima" },
+  { label: "Pausas Activas", value: "pausa activa" }, // 🔹 corregido
+  { label: "Falta de materia prima", value: "materia prima" },
   { label: "Repaso", value: "repaso" },
 ];
+
 export const select_options = [
   { label: "N°1", value: "1" },
   { label: "N°2", value: "2" },
@@ -46,7 +51,11 @@ export const select_options = [
   { label: "N°5", value: "5" },
 ];
 
-export const Messages: Record<string, { message: string; title: string }> = {
+// ==================== MESSAGES ====================
+export const Messages: Record<
+  (typeof button_options)[number]["value"],
+  { title: string; message: string }
+> = {
   almuerzo: {
     title: "¡Disfruta del almuerzo, Capitán!",
     message: `Recargar energías es la mejor inversión
@@ -77,14 +86,14 @@ a la acción con todo lo necesario.`,
 pero el equipo está listo para continuar 
 en cuanto el cielo lo permita.`,
   },
-  pausa: {
+  "pausa activa": {
     title: `Recuerda, Capitán: 
 ¡Cuerpo sano, mente sana!`,
     message: `El equipo está en su pausa activa. Unos minutos 
 de estiramiento y a seguir con la jornada.`,
-  }, //! change to "pausa activa"
+  },
   "materia prima": {
-    title: `Materia prima?`,
-    message: ``,
+    title: `Materia prima en espera`,
+    message: `Tu equipo no puede avanzar sin los recursos. Tan pronto llegue, retomaremos la misión.`,
   },
 };

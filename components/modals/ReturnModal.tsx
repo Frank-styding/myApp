@@ -1,7 +1,7 @@
 import { useReturnModal } from "@/hooks/ReturnModalProvider";
 import { Image, Modal, Text, View } from "react-native";
 import tw from "twrnc";
-import { Button } from "../Button";
+import { ButtonText } from "../ui/ButtonText";
 export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
   const { visible, title, message, hideModal } = useReturnModal();
   return (
@@ -21,7 +21,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             {message}
           </Text>
 
-          <Button
+          <ButtonText
             text="! Volvamos a cosechar !"
             style={tw`w-[70%] p-0 py-4 items-center mt-4`}
             textStyle={tw`text-[18px]`}

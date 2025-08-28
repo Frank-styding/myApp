@@ -1,36 +1,73 @@
-// SendData.ts
 import { getFormattedDate } from "@/utils/getFormattedDate";
 import NetInfo from "@react-native-community/netinfo";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const KEY = "processedIds";
+
+const addProcessedId = async (id: string) => {
+  try {
+    const current = await AsyncStorage.getItem(KEY);
+    const ids: string[] = current ? JSON.parse(current) : [];
+    if (!ids.includes(id)) {
+      ids.push(id);
+      await AsyncStorage.setItem(KEY, JSON.stringify(ids));
+    }
+  } catch (err) {
+    console.error("addProcessedId error", err);
+  }
+};
+
+const hasProcessedId = async (id: string): Promise<boolean> => {
+  try {
+    const current = await AsyncStorage.getItem(KEY);
+    const ids: string[] = current ? JSON.parse(current) : [];
+    return ids.includes(id);
+  } catch (err) {
+    console.error("hasProcessedId error", err);
+    return false;
+  }
+};
+
+const removeProcessedId = async (id: string) => {
+  try {
+    const current = await AsyncStorage.getItem(KEY);
+    const ids: string[] = current ? JSON.parse(current) : [];
+    const filtered = ids.filter((storedId) => storedId !== id);
+    await AsyncStorage.setItem(KEY, JSON.stringify(filtered));
+  } catch (err) {
+    console.error("removeProcessedId error", err);
+  }
+};
 export const sendData = async ({
   place,
   name,
   dni,
   data,
+  id,
 }: {
   place: string;
   name: string;
   dni: string;
-  data: { time: string; state: string; id?: string }[];
+  id?: string;
+  data: { time: string; state: string; id?: string; timeNumber?: number }[];
 }): Promise<{ ok: boolean; status?: number; body?: any }> => {
   const apiUrl = Constants.expoConfig?.extra?.API_URL;
+  console.log(apiUrl);
 
   if (!apiUrl) {
     console.warn("sendData: apiUrl no configurada");
     return { ok: false };
   }
 
-  // Verificar conexión antes de intentar el envío
   const netState = await NetInfo.fetch();
   if (!netState.isConnected || !netState.isInternetReachable) {
     console.warn("sendData: Sin conexión a internet");
     return { ok: false };
   }
 
-  // Función auxiliar para verificar isReady
   const waitUntilReady = async (
-    maxRetries = 10,
+    maxRetries = 3,
     interval = 500
   ): Promise<boolean> => {
     for (let i = 0; i < maxRetries; i++) {
@@ -41,30 +78,69 @@ export const sendData = async ({
           body: JSON.stringify({ type: "isReady" }),
         });
 
-        const text = await resp.text();
-        if (text === "true") {
+        const json = await resp.json();
+        if (json.isReady) {
           return true;
         }
       } catch (err) {
         console.warn("sendData: error consultando isReady", err);
       }
-      // esperar antes de reintentar
       await new Promise((res) => setTimeout(res, interval));
     }
     return false;
   };
 
+  const existsRequest = async (id: string) => {
+    if (await hasProcessedId(id)) return true;
+    const existsResp = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "existsRequest", data: { requestId: id } }),
+    });
+
+    const { exists } = await existsResp.json();
+    if (exists) {
+      await addProcessedId(id);
+    }
+    return exists;
+  };
+
   try {
-    // Esperar hasta que esté listo
+    // 1. Esperar hasta que esté listo
+    console.log("check if is ready");
     const ready = await waitUntilReady();
     if (!ready) {
       console.error("sendData: API no está lista después de varios intentos");
       return { ok: false };
     }
 
-    // Agregar timeout para evitar que la solicitud se quede colgada
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+    // 2. Si hay id, validar que no exista antes de enviar
+    if (id) {
+      try {
+        console.log("check if exist");
+        const exists = await existsRequest(id);
+        if (exists) {
+          console.warn("sendData: request con id ya existe, no se enviará");
+          const deleteRequestResp = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: "deleteRequest", requestId: id }),
+          });
+          if (deleteRequestResp.ok) {
+            removeProcessedId(id);
+            console.warn("sendData: request elimnado del servidor");
+            return { ok: true };
+          }
+          return { ok: false };
+        }
+      } catch (err) {
+        console.error("sendData: error validando existsRequest", err);
+        return { ok: false };
+      }
+    }
+
+    // 3. Enviar datos si pasó validación
+    console.log("sending data");
 
     const resp = await fetch(apiUrl, {
       method: "POST",
@@ -73,7 +149,9 @@ export const sendData = async ({
         Accept: "application/json",
       },
       body: JSON.stringify({
-        type: "insertFormat_1",
+        type: "insert:format_1",
+        timestamp: Math.floor(Date.now() / 1000),
+        id,
         data: {
           spreadsheetName: "cosecha_" + getFormattedDate(),
           sheetName: `fundo_${place}`,
@@ -86,16 +164,12 @@ export const sendData = async ({
             items: data.map((item) => ({
               inicio: item.time,
               estado: item.state,
-              id: item.id,
+              _time: item.timeNumber,
             })),
           },
         },
-        timestamp: Math.floor(Date.now() / 1000),
       }),
-      signal: controller.signal,
     });
-
-    clearTimeout(timeoutId);
 
     const body = await resp.text().catch(() => null);
 

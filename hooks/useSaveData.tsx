@@ -22,6 +22,7 @@ export const useSaveData = () => {
       {
         id: generateUUID(),
         time: getCurrentTime(),
+        timeNumber: Date.now(),
         dni: data.dni as string,
         name: data.name as string,
         place: data.value as string,

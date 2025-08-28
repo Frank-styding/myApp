@@ -1,4 +1,4 @@
-import { Fonts } from "@/constants/constants";
+import { Colors, Fonts } from "@/constants/constants";
 import { Text, TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 import tw from "twrnc";
 interface ButtonProps {
@@ -24,6 +24,13 @@ export const ButtonText = ({
       style={[
         tw`bg-[#d5ff5f] py-4 px-10 rounded-[16px] items-center justify-center`,
         style,
+        {
+          shadowColor: "#000000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.8, // Opacidad alta (0.6 - 0.9)
+          shadowRadius: 4,
+          elevation: 10, // Elevation alto para Android
+        },
       ]}
       onPress={onClick}
     >

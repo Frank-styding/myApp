@@ -2,6 +2,7 @@
 export const fontsMap = {
   "Lato-Bold": require("../assets/fonts/Lato-Bold.ttf"),
   "Lato-Light": require("../assets/fonts/Lato-Light.ttf"),
+  "Lato-Regular": require("../assets/fonts/Lato-Regular.ttf"),
   "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
   "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
 };
@@ -9,6 +10,7 @@ export const fontsMap = {
 export const Fonts: Record<keyof typeof fontsMap, string> = {
   "Lato-Bold": "Lato-Bold",
   "Lato-Light": "Lato-Light",
+  "Lato-Regular": "Lato-Regular",
   "Poppins-Bold": "Poppins-Bold",
   "Poppins-Light": "Poppins-Light",
 };

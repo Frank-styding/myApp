@@ -1,5 +1,5 @@
 import { Colors, fontsMap } from "@/constants/constants";
-import { useBackgroundSync } from "@/hooks/useBackgroundSync ";
+import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { ModalProvider } from "@/providers/ModalProvider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";

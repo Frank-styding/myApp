@@ -26,7 +26,15 @@ interface AppState {
     callback?: () => void
   ) => void;
   addRequest: (
-    data: { dni: string; name: string; place: string; state: string },
+    data: {
+      dni: string;
+      name: string;
+      place: string;
+      state: string;
+      id: string;
+      time: string;
+      timeNumber: number;
+    },
     callback?: () => void
   ) => Promise<void>;
   clearRequests: () => Promise<void>;
@@ -71,8 +79,7 @@ export const useAppState = create<AppState>()(
       addRequest: async (request, callback) => {
         const newItem: QueueItem = {
           ...request,
-          id: generateUUID(),
-          time: getCurrentTime(),
+
           attempts: 0,
           lastAttempt: undefined,
         };

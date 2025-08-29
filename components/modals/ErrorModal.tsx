@@ -1,5 +1,5 @@
 // components/modals/ErrorModal.tsx
-import { useModalContext } from "@/providers/ModalProvider";
+import { useModalContext } from "@/hooks/ModalProvider";
 import { Image, Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
 
@@ -24,7 +24,7 @@ export const ErrorModal = () => {
             {modals.error.message || ""}
           </Text>
           <Image
-            source={require("@/assets/alert.png")}
+            source={require("@/assets/images/icons/alert.png")}
             style={tw`w-[15] h-[15]`}
           />
         </Pressable>

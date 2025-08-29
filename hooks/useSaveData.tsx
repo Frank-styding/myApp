@@ -1,37 +1,35 @@
-import { useAppState } from "@/store/store";
-import { generateUUID } from "@/utils/generateUUID";
+/* import { useAppState } from "@/store/store"; */
 import { getCurrentTime } from "@/utils/getCurrentTime";
-import { useState } from "react";
+import { useBackgroundSync } from "./useBackgroundSync";
 
 export const useSaveData = () => {
-  const { addRequest, data: stateData } = useAppState();
-  const [isSaving, setIsSaving] = useState(false);
+  const { isRunning, startBackgroundTask, addRequest } = useBackgroundSync();
+  /* const { addRequest, data: stateData } = useAppState(); */
 
   const saveData = async (
     state: string,
-    callback?: () => void,
-    nData?: {
+    data: {
       value?: string;
       name?: string;
       dni?: string;
-    }
+    },
+    callback?: () => void
   ) => {
-    const data = nData ? nData : stateData;
-    setIsSaving(true);
-    await addRequest(
-      {
-        id: generateUUID(),
-        time: getCurrentTime(),
-        timeNumber: Date.now(),
-        dni: data.dni as string,
-        name: data.name as string,
-        place: data.value as string,
-        state,
-      },
-      callback
-    );
-    setIsSaving(false);
+    console.log(data);
+    await addRequest({
+      time: getCurrentTime(),
+      dni: data.dni as string,
+      name: data.name as string,
+      place: data.value as string,
+      state,
+    }).then(() => {
+      callback?.();
+    });
+    console.log(isRunning);
+    if (!isRunning) {
+      await startBackgroundTask();
+    }
   };
 
-  return { saveData, isSaving };
+  return { saveData };
 };

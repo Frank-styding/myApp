@@ -39,7 +39,9 @@ export const Picker = ({
     <View style={tw`items-center justify-center`}>
       {/* Selector */}
       <Pressable
-        onPress={() => setVisible(true)}
+        onPress={() => {
+          setVisible(true);
+        }}
         style={[
           tw`bg-[${Colors.light3}] w-full h-10 rounded-lg px-3 flex-row justify-between items-center`,
           style,

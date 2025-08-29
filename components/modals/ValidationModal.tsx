@@ -1,4 +1,4 @@
-import { useModalContext } from "@/providers/ModalProvider";
+import { useModalContext } from "@/hooks/ModalProvider";
 import { Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
 

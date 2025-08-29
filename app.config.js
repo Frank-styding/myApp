@@ -11,10 +11,13 @@ export default {
     newArchEnabled: true,
     ios: {
       supportsTablet: true,
+      infoPlist: {
+        UIBackgroundModes: ["background-processing"],
+      },
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/images/adaptive-icon.png",
+        foregroundImage: "./assets/images/appIcon/adaptive-icon.png",
         backgroundColor: "#ffffff",
       },
       permissions: [
@@ -27,6 +30,13 @@ export default {
       ],
       edgeToEdgeEnabled: true,
       package: "com.frank50pa1.myApp",
+      versionCode: 1, // ← Número interno de versión
+      label: "Mi App", // ← NOMBRE QUE APARECE BAJO EL ICONO ← Esto es lo que buscas
+      gradle: {
+        buildOptions: {
+          jvmArgs: ["-Xmx4g"],
+        },
+      },
     },
     plugins: [
       "expo-router",
@@ -34,12 +44,23 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./assets/images/splash-icon.png",
+          image: "./assets/images/appIcon/splash-icon.png",
           imageWidth: 200,
           resizeMode: "contain",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#2D2D35",
         },
       ],
+      /*       [
+        "expo-build-properties",
+        {
+          android: {
+            compileSdkVersion: 34,
+            targetSdkVersion: 34,
+            buildToolsVersion: "34.0.0",
+            enableProguardInReleaseBuilds: true,
+          },
+        },
+      ], */
     ],
     experiments: {
       typedRoutes: true,
@@ -50,6 +71,7 @@ export default {
         projectId: "cb01b46b-7902-4d7e-8399-538886449c25",
       },
       router: {},
+      /*   jsEngine: "hermes", */
     },
   },
 };

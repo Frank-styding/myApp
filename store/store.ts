@@ -1,4 +1,3 @@
-import { generateUUID } from "@/utils/generateUUID";
 import { getCurrentTime } from "@/utils/getCurrentTime";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";

@@ -9,9 +9,8 @@ import {
   STATES,
   button_options,
 } from "@/constants/constants";
-import { useModal } from "@/hooks/useModal";
 import { useSaveData } from "@/hooks/useSaveData";
-import { useModalContext } from "@/providers/ModalProvider";
+import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
 import { FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -51,18 +50,18 @@ export default function Home() {
 
   const onClick = (key: string) => {
     if (key === "button_1") {
-      saveData(STATES["trabajando"]);
+      saveData(STATES["trabajando"], { ...data });
       setActive(true);
       return;
     }
     if (key === "button_2") {
       setValue({});
-      saveData(STATES["finJornada"]);
-      router.replace("/");
+      saveData(STATES["finJornada"], { ...data });
+      router.replace("/login");
       return;
     }
     showModal("return", Messages[key]);
-    saveData(key);
+    saveData(key, { ...data });
   };
 
   const onChange = () => {
@@ -70,11 +69,11 @@ export default function Home() {
   };
 
   const onReturn = () => {
-    saveData("Trabajando");
+    saveData("Trabajando", { ...data });
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 pt-5`}>
+    <SafeAreaView style={tw`flex-1 pb-13`}>
       <Header name={data.name as string} place={data.value as string} />
       <Buttons options={button_options} active={active} onClick={onClick} />
       <ChangeButton disabled={!active} onClick={onChange} />

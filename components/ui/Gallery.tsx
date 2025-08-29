@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { View } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import Animated, {
   useSharedValue,
   cancelAnimation,
@@ -7,7 +7,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
 } from "react-native-reanimated";
-
+import tw from "twrnc";
 export const Gallery = ({
   pages,
   active,
@@ -87,7 +87,7 @@ export const Gallery = ({
         if (!finished) return;
         runOnJS(changePage)(finished);
       });
-    }, 4000) as unknown as number;
+    }, 2000) as unknown as number;
 
     return () => {
       if (intervalRef.current) {
@@ -102,7 +102,7 @@ export const Gallery = ({
   }));
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={tw`flex-1`}>
       <Animated.View style={[{ flex: 10 }, animatedStyle]}>
         {pages[page]}
       </Animated.View>
@@ -131,6 +131,6 @@ export const Gallery = ({
           />
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };

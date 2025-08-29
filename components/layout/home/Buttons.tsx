@@ -21,7 +21,7 @@ export function Buttons({
             active ? `bg-[${Colors.light3}]` : ""
           }`}
           disabled={active}
-          onClick={() => onClick?.("button_1")}
+          onPress={() => onClick?.("button_1")}
         />
       </View>
       <Text style={tw`text-[#d5d5d7] pl-5  text-[18px] `}>
@@ -59,7 +59,7 @@ export function Buttons({
           style={tw`w-90 items-center p-0 h-[88px] justify-center ${
             !active ? `bg-[${Colors.light3}]` : ""
           }`}
-          onClick={() => onClick?.("button_2")}
+          onPress={() => onClick?.("button_2")}
         />
       </View>
     </View>

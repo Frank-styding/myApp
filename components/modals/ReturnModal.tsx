@@ -1,5 +1,5 @@
 // components/modals/ReturnModal.tsx
-import { useModalContext } from "@/providers/ModalProvider";
+import { useModalContext } from "@/hooks/ModalProvider";
 import { Image, Modal, Text, View } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
@@ -15,7 +15,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
           style={tw`bg-[#2d2d35] w-72 rounded-xl w-85 py-7 gap-3 items-center`}
         >
           <Image
-            source={require("@/assets/logo.png")}
+            source={require("@/assets/images/logo/logo.png")}
             style={tw`w-[110px] h-[70px] mb-4`}
           />
           <Text style={tw`text-white text-[18px] text-center font-bold`}>
@@ -29,7 +29,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             text="! Volvamos a cosechar !"
             style={tw`w-[70%] p-0 py-4 items-center mt-4`}
             textStyle={tw`text-[18px]`}
-            onClick={() => {
+            onPress={() => {
               hideModal("return");
               onClick?.();
             }}

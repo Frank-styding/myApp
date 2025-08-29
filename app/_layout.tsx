@@ -1,15 +1,16 @@
 import { Colors, fontsMap } from "@/constants/constants";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync";
-import { ModalProvider } from "@/providers/ModalProvider";
+import { ModalProvider } from "@/hooks/ModalProvider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { useEffect } from "react";
-import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
+import React, { useEffect } from "react";
+import { Image, Alert, SafeAreaView } from "react-native";
 import tw from "twrnc";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts(fontsMap);
-  const { checkPermissions, startBackgroundTask } = useBackgroundSync();
+  const { checkPermissions, startBackgroundTask, isRunning } =
+    useBackgroundSync();
   useEffect(() => {
     checkPermissions().then((granted) => {
       if (!granted) {
@@ -18,30 +19,32 @@ export default function Layout() {
           "Necesitas conceder permisos de notificaciones para sincronizar en segundo plano."
         );
       } else {
-        startBackgroundTask(); // arranca la sync en segundo plano
+        if (!isRunning) {
+          startBackgroundTask(); // arranca la sync en segundo plano
+        }
       }
     });
   }, []);
 
   if (!fontsLoaded) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <SafeAreaView style={tw`flex-1 justify-center items-center gap-3`}>
+        <Image
+          source={require("@/assets/images/logo/icon-company.png")}
+          style={tw`w-[84px] h-[110px]`}
+        />
+      </SafeAreaView>
+    );
   }
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ flexGrow: 1 }}
-    >
-      <View style={tw`flex-1`}>
-        <ModalProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: tw`bg-[${Colors.background}]`,
-            }}
-          />
-        </ModalProvider>
-      </View>
-    </ScrollView>
+    <ModalProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: tw`bg-[${Colors.background}]`,
+        }}
+      />
+    </ModalProvider>
   );
 }

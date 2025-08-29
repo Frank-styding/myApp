@@ -1,11 +1,11 @@
-import { Colors, Fonts } from "@/constants/constants";
+import { Fonts } from "@/constants/constants";
 import { Text, TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 import tw from "twrnc";
 interface ButtonProps {
   text?: string;
   style?: ViewStyle;
   textStyle?: TextStyle;
-  onClick?: () => void;
+  onPress?: () => void;
   disabled?: boolean;
   fontFamily?: string;
 }
@@ -14,7 +14,7 @@ export const ButtonText = ({
   text,
   style,
   textStyle,
-  onClick,
+  onPress,
   disabled,
   fontFamily,
 }: ButtonProps) => {
@@ -32,7 +32,7 @@ export const ButtonText = ({
           elevation: 10, // Elevation alto para Android
         },
       ]}
-      onPress={onClick}
+      onPress={onPress}
     >
       <Text
         style={[

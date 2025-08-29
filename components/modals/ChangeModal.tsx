@@ -1,5 +1,5 @@
 // components/modals/ChangeModal.tsx
-import { useModalContext } from "@/providers/ModalProvider";
+import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
 import { useState } from "react";
 import { Image, Modal, Pressable, Text, View } from "react-native";
@@ -34,7 +34,7 @@ export const ChangeModal = () => {
           onPress={(e) => e.stopPropagation()}
         >
           <Image
-            source={require("@/assets/changeIcon.png")}
+            source={require("@/assets/images/icons/changeIcon.png")}
             style={tw`w-15 h-15`}
           />
           <View style={tw`flex-row w-72 justify-between`}>
@@ -60,7 +60,7 @@ export const ChangeModal = () => {
             <ButtonText
               text="Cambiar de fundo"
               style={tw`h-10 p-0 w-[70] rounded-[8px]`}
-              onClick={handleClick}
+              onPress={handleClick}
             />
           </View>
         </Pressable>

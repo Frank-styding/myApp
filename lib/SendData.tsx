@@ -1,44 +1,7 @@
 import { getFormattedDate } from "@/utils/getFormattedDate";
 import NetInfo from "@react-native-community/netinfo";
 import Constants from "expo-constants";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const KEY = "processedIds";
-
-const addProcessedId = async (id: string) => {
-  try {
-    const current = await AsyncStorage.getItem(KEY);
-    const ids: string[] = current ? JSON.parse(current) : [];
-    if (!ids.includes(id)) {
-      ids.push(id);
-      await AsyncStorage.setItem(KEY, JSON.stringify(ids));
-    }
-  } catch (err) {
-    console.error("addProcessedId error", err);
-  }
-};
-
-const hasProcessedId = async (id: string): Promise<boolean> => {
-  try {
-    const current = await AsyncStorage.getItem(KEY);
-    const ids: string[] = current ? JSON.parse(current) : [];
-    return ids.includes(id);
-  } catch (err) {
-    console.error("hasProcessedId error", err);
-    return false;
-  }
-};
-
-const removeProcessedId = async (id: string) => {
-  try {
-    const current = await AsyncStorage.getItem(KEY);
-    const ids: string[] = current ? JSON.parse(current) : [];
-    const filtered = ids.filter((storedId) => storedId !== id);
-    await AsyncStorage.setItem(KEY, JSON.stringify(filtered));
-  } catch (err) {
-    console.error("removeProcessedId error", err);
-  }
-};
 export const sendData = async ({
   place,
   name,
@@ -90,7 +53,7 @@ export const sendData = async ({
     return false;
   };
 
-  const existsRequest = async (id: string) => {
+  /*  const existsRequest = async (id: string) => {
     if (await hasProcessedId(id)) return true;
     const existsResp = await fetch(apiUrl, {
       method: "POST",
@@ -103,7 +66,7 @@ export const sendData = async ({
       await addProcessedId(id);
     }
     return exists;
-  };
+  }; */
 
   try {
     // 1. Esperar hasta que esté listo
@@ -115,7 +78,7 @@ export const sendData = async ({
     }
 
     // 2. Si hay id, validar que no exista antes de enviar
-    if (id) {
+    /*    if (id) {
       try {
         console.log("check if exist");
         const exists = await existsRequest(id);
@@ -137,7 +100,7 @@ export const sendData = async ({
         console.error("sendData: error validando existsRequest", err);
         return { ok: false };
       }
-    }
+    } */
 
     // 3. Enviar datos si pasó validación
     console.log("sending data");

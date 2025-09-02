@@ -2,32 +2,52 @@ import { ErrorModal } from "@/components/modals/ErrorModal";
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Input } from "@/components/ui/Input";
 import { Picker } from "@/components/ui/Picker";
-import { select_options } from "@/constants/constants";
+import { Colors } from "@/constants/constants";
 import { useModalContext } from "@/hooks/ModalProvider";
+import { getAppConfig } from "@/lib/getAppConfig";
+import { getUser } from "@/lib/getUser";
+import { loginUser } from "@/lib/loginUser";
 import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, Modal, ActivityIndicator } from "react-native";
 import tw from "twrnc";
 
 export default function Login() {
   const [data, setData] = useState<{
-    value?: string;
+    place?: string;
     name?: string;
     dni?: string;
+    password?: string;
+    error?: string;
   }>({});
+
   const { showModal } = useModalContext();
   const router = useRouter();
-  const { setValue } = useAppState();
+  const {
+    setData: setDataState,
+    data: dataState,
+    config,
+    setConfig,
+  } = useAppState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (data.dni && data.name && data.value) {
+    if (dataState.dni && dataState.name && dataState.place) {
       router.replace("/home");
+      return;
     }
+    setIsLoading(true);
+    getAppConfig().then(({ config }) => {
+      if (config) {
+        setConfig(config);
+      }
+      setIsLoading(false);
+    });
   }, []);
 
   const onClick = () => {
-    if (!data.dni || !data.name || !data.value) {
+    if (!data.dni || !data.name || !data.place || !data.password) {
       showModal("error", "Por favor complete todos los campos");
       return;
     }
@@ -36,8 +56,40 @@ export default function Login() {
       return;
     }
 
-    setValue(data);
-    router.replace("/home");
+    if (!data.dni && !data.name) {
+      showModal("error", "El dni de usuario es incorrecto");
+      return;
+    }
+
+    setIsLoading(true);
+    loginUser({ dni: data.dni, password: data.password }).then(
+      ({ correct }) => {
+        setIsLoading(false);
+        if (correct) {
+          setDataState(data);
+          router.replace("/home");
+        } else {
+          showModal("error", "La contraseña es incorrecta");
+        }
+      }
+    );
+  };
+
+  const onChangeUser = (userId: string) => {
+    if (userId.length === 8) {
+      if (!data["dni"] || data["dni"] !== userId) {
+        setIsLoading(true);
+        getUser({ dni: userId }).then(({ name }) => {
+          setIsLoading(false);
+          if (name) {
+            setData({ ...data, name, dni: userId });
+          } else {
+            showModal("error", "El usuario no fue encontrado");
+          }
+        });
+      }
+    }
+    setData({ ...data, name: undefined, dni: userId });
   };
 
   return (
@@ -50,31 +102,47 @@ export default function Login() {
       </View>
       <View style={tw`flex-3 px-3 gap-4`}>
         <View style={tw`gap-3`}>
-          <Text style={tw`text-white text-[20px] `}>Bienvenido capitán</Text>
+          <View style={tw`flex-row gap-2`}>
+            <Text style={tw`text-white text-[20px] `}>Bienvenido capitán</Text>
+            {data.name && (
+              <Text style={tw`text-[${Colors.primary}] text-[20px] `}>
+                {data.name}
+              </Text>
+            )}
+          </View>
           <Input
-            placeholder="Nombre de capitan"
-            onChangeText={(value) => setData({ ...data, name: value })}
-          />
-          <Input
-            placeholder="Ingrese DNI"
+            placeholder="Usuario"
             keyboardType="number-pad"
             maxLength={8}
-            onChangeText={(value) => setData({ ...data, dni: value })}
+            onChangeText={onChangeUser}
+          />
+          <Input
+            placeholder="Contraseña*"
+            keyboardType="default"
+            onChangeText={(password) => setData({ ...data, password })}
           />
         </View>
         <View style={tw`gap-3`}>
           <Text style={tw`text-white text-[20px] `}>Selecione fundo</Text>
           <Picker
             placeholder="N° de fundo"
-            value={data.value ? `N° ${data.value}` : ""}
-            options={select_options}
-            onSelect={(value) => setData({ ...data, value })}
+            value={data.place ? `N° ${data.place}` : ""}
+            options={config.select_options}
+            onSelect={(place) => setData({ ...data, place })}
           />
         </View>
       </View>
       <View style={tw`flex-3 items-center pt-10`}>
         <ButtonText text="Comencemos" onPress={onClick} />
       </View>
+
+      <Modal transparent visible={isLoading} animationType="fade">
+        <View
+          style={tw`flex-1 items-center justify-center bg-[rgba(0,0,0,0.6)]`}
+        >
+          <ActivityIndicator size={"large"} color={Colors.primary} />
+        </View>
+      </Modal>
       <ErrorModal />
     </View>
   );

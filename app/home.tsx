@@ -3,12 +3,7 @@ import { Header } from "@/components/layout/home/Header";
 import { ChangeModal } from "@/components/modals/ChangeModal";
 import { ReturnModal } from "@/components/modals/ReturnModal";
 import { Button } from "@/components/ui/Button";
-import {
-  Colors,
-  Messages,
-  STATES,
-  button_options,
-} from "@/constants/constants";
+import { Colors, STATES } from "@/constants/constants";
 import { useSaveData } from "@/hooks/useSaveData";
 import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
@@ -18,6 +13,8 @@ import { useState } from "react";
 import { SafeAreaView, View } from "react-native";
 
 import tw from "twrnc";
+import { getCurrentTime } from "@/utils/getCurrentTime";
+import { compareHours } from "@/utils/compareHours";
 
 function ChangeButton({
   onClick,
@@ -46,21 +43,24 @@ export default function Home() {
   const { saveData } = useSaveData();
   const [active, setActive] = useState(false);
   const router = useRouter();
-  const { data, setValue } = useAppState();
+  const { data, setData, config } = useAppState();
 
   const onClick = (key: string) => {
     if (key === "button_1") {
+      if (compareHours(getCurrentTime(), "6:30:00") > 0) {
+        saveData(STATES["noTrabajando"], { ...data, time: "6:30:00" });
+      }
       saveData(STATES["trabajando"], { ...data });
       setActive(true);
       return;
     }
     if (key === "button_2") {
-      setValue({});
+      setData({});
       saveData(STATES["finJornada"], { ...data });
       router.replace("/login");
       return;
     }
-    showModal("return", Messages[key]);
+    showModal("return", config.messages[key]);
     saveData(key, { ...data });
   };
 
@@ -69,16 +69,20 @@ export default function Home() {
   };
 
   const onReturn = () => {
-    saveData("Trabajando", { ...data });
+    saveData(STATES["trabajando"], { ...data });
+  };
+
+  const callback = () => {
+    setActive(false);
   };
 
   return (
     <SafeAreaView style={tw`flex-1 pb-13`}>
-      <Header name={data.name as string} place={data.value as string} />
-      <Buttons options={button_options} active={active} onClick={onClick} />
-      <ChangeButton disabled={!active} onClick={onChange} />
+      <Header name={data.name as string} place={data.place as string} />
+      <Buttons options={config.buttons} active={active} onClick={onClick} />
+      {/* <ChangeButton disabled={!active} onClick={onChange} /> */}
       <ReturnModal onClick={onReturn} />
-      <ChangeModal />
+      <ChangeModal callback={callback} />
     </SafeAreaView>
   );
 }

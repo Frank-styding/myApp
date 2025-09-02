@@ -31,6 +31,8 @@ export const Colors = {
 export const STATES = {
   trabajando: "trabajando",
   finJornada: "fin jornada",
+  noTrabajando: "no trabajando",
+  transladoFundo: "translado de fundo",
 };
 
 // ==================== BUTTON OPTIONS ====================
@@ -41,7 +43,7 @@ export const button_options = [
   { label: "Causas climatológicas", value: "problemas climaticos" },
   { label: "Charlas & Reuniones", value: "charla" },
   { label: "Pausas Activas", value: "pausa activa" }, // 🔹 corregido
-  { label: "Falta de materia prima", value: "materia prima" },
+  /*  { label: "Falta de materia prima", value: "materia prima" }, */
   { label: "Repaso", value: "repaso" },
 ];
 
@@ -94,8 +96,8 @@ en cuanto el cielo lo permita.`,
     message: `El equipo está en su pausa activa. Unos minutos 
 de estiramiento y a seguir con la jornada.`,
   },
-  "materia prima": {
+  /*   "materia prima": {
     title: `Materia prima en espera`,
     message: `Tu equipo no puede avanzar sin los recursos. Tan pronto llegue, retomaremos la misión.`,
-  },
+  }, */
 };

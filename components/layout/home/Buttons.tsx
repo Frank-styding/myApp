@@ -13,7 +13,7 @@ export function Buttons({
   active?: boolean;
 }) {
   return (
-    <View style={tw`flex-15`}>
+    <View style={tw`flex-17`}>
       <View style={tw`flex-1 items-center justify-center`}>
         <ButtonText
           text="Comencemos a cosechar"

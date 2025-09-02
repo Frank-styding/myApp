@@ -7,19 +7,23 @@ import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
 import { Picker } from "../ui/Picker";
 import { useSaveData } from "@/hooks/useSaveData";
-import { Colors, select_options, STATES } from "@/constants/constants";
+import { Colors, STATES } from "@/constants/constants";
 
-export const ChangeModal = () => {
+export const ChangeModal = ({ callback }: { callback?: () => void }) => {
   const { hideModal, modals } = useModalContext();
-  const { data, setValue } = useAppState();
+  const { data, setData, config } = useAppState();
   const [option, setOption] = useState<string>();
   const { saveData } = useSaveData();
 
   const handleClick = () => {
-    saveData(STATES["finJornada"], undefined, { ...data });
-    setValue({ ...data, value: option }, () => {
-      saveData(STATES["trabajando"], undefined, { ...data, value: option });
-      hideModal("change");
+    callback?.();
+    saveData(STATES["finJornada"], { ...data });
+    setData({ ...data, place: option }, () => {
+      saveData(STATES["transladoFundo"], { ...data, value: option }).then(
+        () => {
+          hideModal("change");
+        }
+      );
     });
   };
 
@@ -42,7 +46,7 @@ export const ChangeModal = () => {
               <Text style={tw`text-[18px] text-white`}>Fundo Actual</Text>
               <Text
                 style={tw`p-2 w-[35] rounded-[8px] bg-[${Colors.black}] text-[${Colors.light3}] text-[18px]`}
-              >{`Fundo N°${data.value}`}</Text>
+              >{`Fundo N°${data.place}`}</Text>
             </View>
             <View>
               <Text style={tw`text-[18px] text-white`}>Nuevo Fundo</Text>
@@ -50,7 +54,7 @@ export const ChangeModal = () => {
                 placeholder="N° de fundo"
                 style={tw`w-[35] bg-[${Colors.black}]`}
                 textStyle={tw`text-[${Colors.light3}] text-[18px]`}
-                options={select_options}
+                options={config.select_options}
                 value={option ? `Fundo N°${option}` : undefined}
                 onSelect={setOption}
               />

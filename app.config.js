@@ -31,7 +31,7 @@ export default {
       edgeToEdgeEnabled: true,
       package: "com.frank50pa1.myApp",
       versionCode: 1, // ← Número interno de versión
-      label: "Mi App", // ← NOMBRE QUE APARECE BAJO EL ICONO ← Esto es lo que buscas
+      label: "EG Agroindustrial", // ← NOMBRE QUE APARECE BAJO EL ICONO ← Esto es lo que buscas
       gradle: {
         buildOptions: {
           jvmArgs: ["-Xmx4g"],
@@ -45,7 +45,7 @@ export default {
         "expo-splash-screen",
         {
           image: "./assets/images/appIcon/splash-icon.png",
-          imageWidth: 200,
+          imageWidth: 84,
           resizeMode: "contain",
           backgroundColor: "#2D2D35",
         },

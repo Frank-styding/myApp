@@ -27,30 +27,30 @@ export function Buttons({
       <Text style={tw`text-[#d5d5d7] pl-5  text-[18px] `}>
         Tiempos de espera
       </Text>
-      <View
-        style={tw`flex-4 flex-wrap flex-row gap-3 justify-center  content-center`}
-      >
-        {options.map(({ label, value }) => (
-          <TouchableOpacity
-            style={tw`w-43 h-20 ${
-              active
-                ? `bg-[${Colors.black}] shadow-xl shadow-[${Colors.primary}]`
-                : `bg-[${Colors.light3}]`
-            } rounded-[8px] items-center justify-center p-3`}
-            onPress={() => onClick?.(value)}
-            disabled={!active}
-            key={label}
-          >
-            <Text
-              style={[
-                tw`text-white text-[16px] text-center`,
-                { fontFamily: Fonts["Lato-Bold"] },
-              ]}
+      <View style={tw`flex-4 justify-center items-center`}>
+        <View style={tw`flex-wrap flex-row gap-3 max-w-[360px]`}>
+          {options.map(({ label, value }) => (
+            <TouchableOpacity
+              style={tw`w-43 h-20 ${
+                active
+                  ? `bg-[${Colors.black}] shadow-xl shadow-[${Colors.primary}]`
+                  : `bg-[${Colors.light3}]`
+              } rounded-[8px] items-center justify-center p-3`}
+              onPress={() => onClick?.(value)}
+              disabled={!active}
+              key={label}
             >
-              {label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  tw`text-white text-[16px] text-center`,
+                  { fontFamily: Fonts["Lato-Bold"] },
+                ]}
+              >
+                {label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
       <View style={tw`flex-1 items-center justify-center mt-1`}>
         <ButtonText

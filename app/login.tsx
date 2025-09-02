@@ -10,8 +10,19 @@ import { loginUser } from "@/lib/loginUser";
 import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
 import { useState, useEffect } from "react";
-import { View, Image, Text, Modal, ActivityIndicator } from "react-native";
+import {
+  View,
+  Image,
+  Text,
+  Modal,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 import tw from "twrnc";
+import { useBackgroundSync } from "@/hooks/useBackgroundSync";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const FIRST_TIME_KEY = "@first_time_app";
 
 export default function Login() {
   const [data, setData] = useState<{
@@ -32,17 +43,46 @@ export default function Login() {
   } = useAppState();
   const [isLoading, setIsLoading] = useState(false);
 
+  const { checkPermissions, startBackgroundTask, isRunning } =
+    useBackgroundSync();
+
+  useEffect(() => {
+    AsyncStorage.getItem(FIRST_TIME_KEY).then((value) => {
+      if (value == null || value == "true") return;
+      checkPermissions().then((granted) => {
+        if (!granted) {
+          Alert.alert(
+            "Permisos necesarios",
+            "Necesitas conceder permisos de notificaciones para sincronizar en segundo plano."
+          );
+        } else {
+          if (!isRunning) {
+            startBackgroundTask(); // arranca la sync en segundo plano
+          }
+        }
+      });
+    });
+  }, []);
+
   useEffect(() => {
     if (dataState.dni && dataState.name && dataState.place) {
       router.replace("/home");
       return;
     }
-    setIsLoading(true);
-    getAppConfig().then(({ config }) => {
-      if (config) {
-        setConfig(config);
+
+    NetInfo.fetch().then((netState) => {
+      if (!netState.isConnected || !netState.isInternetReachable) {
+        console.warn("sendData: Sin conexión a internet");
+        showModal("error", "No tiene connecion a internet");
+        return;
       }
-      setIsLoading(false);
+      setIsLoading(true);
+      getAppConfig().then(({ config }) => {
+        if (config) {
+          setConfig(config);
+        }
+        setIsLoading(false);
+      });
     });
   }, []);
 
@@ -63,8 +103,11 @@ export default function Login() {
 
     setIsLoading(true);
     loginUser({ dni: data.dni, password: data.password }).then(
-      ({ correct }) => {
+      ({ correct, image }) => {
         setIsLoading(false);
+        if (image) {
+          console.log(image);
+        }
         if (correct) {
           setDataState(data);
           router.replace("/home");

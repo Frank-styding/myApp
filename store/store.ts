@@ -12,11 +12,13 @@ export interface IConfig {
 interface AppState {
   data: { place?: string; name?: string; dni?: string; password?: string };
   config: IConfig;
+  image?: string;
   setData: (
     data: { place?: string; name?: string; dni?: string; password?: string },
     callback?: () => void
   ) => void;
   setConfig: (config: IConfig) => void;
+  setImage: (image: string) => void;
 }
 
 export const useAppState = create<AppState>()(
@@ -88,6 +90,9 @@ de estiramiento y a seguir con la jornada.`,
       },
       setConfig: (config) => {
         set(() => ({ config }));
+      },
+      setImage: (image) => {
+        set(() => ({ image }));
       },
     }),
     {

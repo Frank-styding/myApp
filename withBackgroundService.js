@@ -4,10 +4,10 @@ module.exports = function withBackgroundService(config) {
   return withAndroidManifest(config, (config) => {
     const service = {
       $: {
-        "android:name": "com.asterinet.react.bgactions.BackgroundService",
+        "android:name": "com.asterinet.react.bgactions.RNBackgroundActionsTask",
         "android:foregroundServiceType": "dataSync",
-        "android:enabled": "true",
-        "android:exported": "false",
+        /* "android:enabled": "true", */
+        "android:exported": "true",
       },
     };
 
@@ -22,7 +22,7 @@ module.exports = function withBackgroundService(config) {
       !app.service.some(
         (s) =>
           s.$["android:name"] ===
-          "com.asterinet.react.bgactions.BackgroundService"
+          "com.asterinet.react.bgactions.RNBackgroundActionsTask"
       )
     ) {
       app.service.push(service);

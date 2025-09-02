@@ -1,15 +1,18 @@
+import { IConfig } from "@/store/store";
 import Constants from "expo-constants";
-export const loginUser = async ({
-  dni,
-  password,
-}: {
-  dni: string;
-  password: string;
-}) => {
+import NetInfo from "@react-native-community/netinfo";
+
+export const getImage = async ({ dni }: { dni: string }) => {
   const apiUrl = Constants.expoConfig?.extra?.API_URL;
 
   if (!apiUrl) {
     console.warn("sendData: apiUrl no configurada");
+    return { ok: false };
+  }
+
+  const netState = await NetInfo.fetch();
+  if (!netState.isConnected || !netState.isInternetReachable) {
+    console.warn("sendData: Sin conexión a internet");
     return { ok: false };
   }
 
@@ -20,11 +23,10 @@ export const loginUser = async ({
       Accept: "application/json",
     },
     body: JSON.stringify({
-      type: "login",
+      type: "getImage",
       timestamp: Math.floor(Date.now() / 1000),
       data: {
-        dni,
-        password,
+        dni: dni,
       },
     }),
   });
@@ -32,11 +34,7 @@ export const loginUser = async ({
   const json = await resp.json();
 
   if (resp.ok) {
-    return {
-      ok: true,
-      correct: json.correct,
-      image: json.image,
-    };
+    return { ok: true, image: json.image as Record<string, string> };
   }
 
   return { ok: false };

@@ -1,10 +1,17 @@
 import { IConfig } from "@/store/store";
 import Constants from "expo-constants";
+import NetInfo from "@react-native-community/netinfo";
 export const getAppConfig = async () => {
   const apiUrl = Constants.expoConfig?.extra?.API_URL;
 
   if (!apiUrl) {
     console.warn("sendData: apiUrl no configurada");
+    return { ok: false };
+  }
+
+  const netState = await NetInfo.fetch();
+  if (!netState.isConnected || !netState.isInternetReachable) {
+    console.warn("sendData: Sin conexión a internet");
     return { ok: false };
   }
 

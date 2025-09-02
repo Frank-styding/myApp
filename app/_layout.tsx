@@ -2,27 +2,34 @@ import { Colors, fontsMap } from "@/constants/constants";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { ModalProvider } from "@/hooks/ModalProvider";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import React, { useEffect } from "react";
+import { router, Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
 import { Image, Alert, SafeAreaView } from "react-native";
 import tw from "twrnc";
+/* import { useIsFirstTime } from "@/hooks/isFirstTime"; */
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const FIRST_TIME_KEY = "@first_time_app";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts(fontsMap);
   const { checkPermissions, startBackgroundTask, isRunning } =
     useBackgroundSync();
+
   useEffect(() => {
-    checkPermissions().then((granted) => {
-      if (!granted) {
-        Alert.alert(
-          "Permisos necesarios",
-          "Necesitas conceder permisos de notificaciones para sincronizar en segundo plano."
-        );
-      } else {
-        if (!isRunning) {
-          startBackgroundTask(); // arranca la sync en segundo plano
+    AsyncStorage.getItem(FIRST_TIME_KEY).then((value) => {
+      if (value == null || value == "true") return;
+      checkPermissions().then((granted) => {
+        if (!granted) {
+          Alert.alert(
+            "Permisos necesarios",
+            "Necesitas conceder permisos de notificaciones para sincronizar en segundo plano."
+          );
+        } else {
+          if (!isRunning) {
+            startBackgroundTask(); // arranca la sync en segundo plano
+          }
         }
-      }
+      });
     });
   }, []);
 

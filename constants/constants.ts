@@ -36,27 +36,27 @@ export const STATES = {
 };
 
 // ==================== BUTTON OPTIONS ====================
-export const button_options = [
+/* export const button_options = [
   { label: "Almuerzo", value: "almuerzo" },
   { label: "Falta de materiales", value: "materiales" },
   { label: "Traslados internos", value: "traslado interno" },
   { label: "Causas climatológicas", value: "problemas climaticos" },
   { label: "Charlas & Reuniones", value: "charla" },
-  { label: "Pausas Activas", value: "pausa activa" }, // 🔹 corregido
-  /*  { label: "Falta de materia prima", value: "materia prima" }, */
-  { label: "Repaso", value: "repaso" },
-];
+  { label: "Pausas Activas", value: "pausa activa" },  */ // 🔹 corregido
+/*  { label: "Falta de materia prima", value: "materia prima" }, */
+/*  { label: "Repaso", value: "repaso" },
+]; */
 
-export const select_options = [
+/* export const select_options = [
   { label: "N°1", value: "1" },
   { label: "N°2", value: "2" },
   { label: "N°3", value: "3" },
   { label: "N°4", value: "4" },
   { label: "N°5", value: "5" },
-];
+]; */
 
 // ==================== MESSAGES ====================
-export const Messages: Record<
+/* export const Messages: Record<
   (typeof button_options)[number]["value"],
   { title: string; message: string }
 > = {
@@ -95,9 +95,9 @@ en cuanto el cielo lo permita.`,
 ¡Cuerpo sano, mente sana!`,
     message: `El equipo está en su pausa activa. Unos minutos 
 de estiramiento y a seguir con la jornada.`,
-  },
-  /*   "materia prima": {
+  }, */
+/*   "materia prima": {
     title: `Materia prima en espera`,
     message: `Tu equipo no puede avanzar sin los recursos. Tan pronto llegue, retomaremos la misión.`,
   }, */
-};
+/* }; */

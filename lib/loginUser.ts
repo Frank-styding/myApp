@@ -35,7 +35,6 @@ export const loginUser = async ({
     return {
       ok: false,
       correct: json.correct,
-      config: json.config,
     };
   }
 

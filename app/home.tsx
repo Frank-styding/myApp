@@ -9,33 +9,9 @@ import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView, View } from "react-native";
-
 import tw from "twrnc";
-import { getCurrentTime } from "@/utils/getCurrentTime";
-import { compareHours } from "@/utils/compareHours";
 import { getImage } from "@/lib/getImage";
-
-/* function ChangeButton({
-  onClick,
-  disabled,
-}: {
-  onClick?: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <View style={tw`flex-2 justify-end items-center pb-3`}>
-      <Button
-        style={tw`w-90 items-center ${
-          disabled ? `bg-[${Colors.light3}]` : `bg-[${Colors.black2}]`
-        }`}
-        onClick={() => onClick?.()}
-        disabled={disabled}
-      >
-        <FontAwesome name="exchange" size={24} color="black" />
-      </Button>
-    </View>
-  );
-} */
+import { isPastSixThirty } from "@/lib/isPastSixThirty";
 
 export default function Home() {
   const { showModal } = useModalContext();
@@ -56,7 +32,7 @@ export default function Home() {
 
   const onClick = (key: string) => {
     if (key === "button_1") {
-      if (compareHours(getCurrentTime(), "6:30:00") > 0) {
+      if (isPastSixThirty()) {
         saveData(STATES["noTrabajando"], { ...data, time: "6:30:00" });
       }
       saveData(STATES["trabajando"], { ...data });
@@ -71,10 +47,6 @@ export default function Home() {
     }
     showModal("return", config.messages[key]);
     saveData(key, { ...data });
-  };
-
-  const onChange = () => {
-    showModal("change");
   };
 
   const onReturn = () => {
@@ -93,7 +65,6 @@ export default function Home() {
         image={image}
       />
       <Buttons options={config.buttons} active={active} onClick={onClick} />
-      {/* <ChangeButton disabled={!active} onClick={onChange} /> */}
       <ReturnModal onClick={onReturn} />
       <ChangeModal callback={callback} />
     </SafeAreaView>

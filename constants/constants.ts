@@ -33,6 +33,7 @@ export const STATES = {
   finJornada: "fin jornada",
   noTrabajando: "no trabajando",
   transladoFundo: "translado de fundo",
+  horasExtra: "horas extra",
 };
 
 // ==================== BUTTON OPTIONS ====================

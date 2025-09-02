@@ -57,7 +57,7 @@ export default function Login() {
           );
         } else {
           if (!isRunning) {
-            startBackgroundTask(); // arranca la sync en segundo plano
+            startBackgroundTask();
           }
         }
       });

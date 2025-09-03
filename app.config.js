@@ -1,7 +1,7 @@
 import withBackgroundService from "./withBackgroundService";
 export default {
   expo: {
-    name: "myApp",
+    name: "EG Agroindustrial",
     slug: "myApp",
     version: "1.0.0",
     orientation: "portrait",
@@ -9,12 +9,6 @@ export default {
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
-    ios: {
-      supportsTablet: true,
-      infoPlist: {
-        UIBackgroundModes: ["background-processing"],
-      },
-    },
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/appIcon/adaptive-icon.png",
@@ -32,8 +26,8 @@ export default {
       ],
       edgeToEdgeEnabled: true,
       package: "com.frank50pa1.myApp",
-      versionCode: 1, // ← Número interno de versión
-      label: "EG Agroindustrial", // ← NOMBRE QUE APARECE BAJO EL ICONO ← Esto es lo que buscas
+      versionCode: 1,
+      label: "EG Agroindustrial",
       gradle: {
         buildOptions: {
           jvmArgs: ["-Xmx4g"],
@@ -52,17 +46,6 @@ export default {
           backgroundColor: "#2D2D35",
         },
       ],
-      /*       [
-        "expo-build-properties",
-        {
-          android: {
-            compileSdkVersion: 34,
-            targetSdkVersion: 34,
-            buildToolsVersion: "34.0.0",
-            enableProguardInReleaseBuilds: true,
-          },
-        },
-      ], */
     ],
     experiments: {
       typedRoutes: true,

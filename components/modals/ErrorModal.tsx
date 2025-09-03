@@ -25,7 +25,7 @@ export const ErrorModal = () => {
           </Text>
           <Image
             source={require("@/assets/images/icons/alert.png")}
-            style={tw`w-[15] h-[15]`}
+            style={tw`w-[20] h-[20]`}
           />
         </Pressable>
       </Pressable>

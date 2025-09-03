@@ -25,6 +25,7 @@ export default function Layout() {
       <Stack
         screenOptions={{
           headerShown: false,
+          animation: "slide_from_right",
           contentStyle: tw`bg-[${Colors.background}]`,
         }}
       />

@@ -11,8 +11,9 @@ import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
 import tw from "twrnc";
 import { getImage } from "@/lib/getImage";
-import { isPastSixThirty } from "@/lib/isPastSixThirty";
+import { isPastSeventeenStrict, isPastSixThirty } from "@/lib/isPastSixThirty";
 import { getBase64Hash, saveImageLocally } from "@/lib/saveImageLocally";
+import { ValidationModal } from "@/components/modals/ValidationModal";
 
 export default function Home() {
   const { showModal } = useModalContext();
@@ -30,6 +31,21 @@ export default function Home() {
     setImageHash,
     isWorking,
   } = useAppState();
+
+  useEffect(() => {
+    const checkTime = async () => {
+      if (isPastSeventeenStrict() && isWorking) {
+        await saveData(STATES["finJornada"], { ...data });
+        setIsWorking(false);
+        showModal("validation", "Se termino la jornada", () => {
+          router.replace("/login");
+        });
+      }
+    };
+    const interval = setInterval(checkTime, 60 * 1000);
+    checkTime();
+    return () => clearInterval(interval);
+  }, [data, isWorking]);
 
   useEffect(() => {
     if (!data.dni) return;
@@ -55,7 +71,6 @@ export default function Home() {
       }
       setIsWorking(true);
       await saveData(STATES["trabajando"], { ...data });
-      /* setActive(true); */
       return;
     }
     if (key === "button_2") {
@@ -75,12 +90,10 @@ export default function Home() {
   const onReturn = async () => {
     await saveData(STATES["trabajando"], { ...data });
   };
-
   const callback = () => {
     setIsWorking(false);
     /* setActive(false); */
   };
-
   return (
     <SafeAreaView style={tw`flex-1 pb-20`}>
       <Header
@@ -91,6 +104,7 @@ export default function Home() {
       <Buttons options={config.buttons} active={isWorking} onClick={onClick} />
       <ReturnModal onClick={onReturn} />
       <ChangeModal callback={callback} />
+      <ValidationModal disabledTap={true} />
     </SafeAreaView>
   );
 }

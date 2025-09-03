@@ -1,27 +1,45 @@
 import { useModalContext } from "@/hooks/ModalProvider";
-import { Modal, Pressable, Text } from "react-native";
+import { Image, Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
+import { ButtonText } from "../ui/ButtonText";
 
-export const ValidationModal = () => {
+export const ValidationModal = ({ disabledTap }: { disabledTap?: boolean }) => {
   const { modals, hideModal } = useModalContext();
-  const { visible, message } = modals.validation;
-
+  const { visible, message, callback } = modals.validation;
   return (
     <Modal transparent visible={visible} animationType="fade">
       <Pressable
-        onPress={() => hideModal("validation")}
+        onPress={() => {
+          if (disabledTap) return;
+          hideModal("validation");
+          callback?.(false);
+        }}
         style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
       >
         <Pressable
-          style={tw`bg-[#000000] w-72 rounded-xl w-85 py-7 gap-5 items-center`}
-          onPress={(e) => e.stopPropagation()}
+          onPress={() => {}}
+          style={tw`bg-[#2d2d35] w-72 rounded-xl w-85 py-7 gap-3 items-center`}
         >
-          <Text style={tw`text-white text-[22px] text-center font-bold`}>
+          <Image
+            source={require("@/assets/images/logo/logo.png")}
+            style={tw`w-[140px] h-[80px] mb-4`}
+          />
+          <Text style={tw`text-white text-[18px] text-center font-bold`}>
             Mensage
           </Text>
-          <Text style={tw`text-white text-[17px] text-center`}>
-            {message || ""}
+          <Text style={tw`text-[#E0E0E0FF] text-[16px] text-center w-70`}>
+            {message}
           </Text>
+
+          <ButtonText
+            text="Continuar"
+            style={tw`w-[70%] p-0 py-4 items-center mt-4`}
+            textStyle={tw`text-[18px]`}
+            onPress={() => {
+              hideModal("validation");
+              callback?.(true);
+            }}
+          />
         </Pressable>
       </Pressable>
     </Modal>

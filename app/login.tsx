@@ -2,7 +2,7 @@ import { ErrorModal } from "@/components/modals/ErrorModal";
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Input } from "@/components/ui/Input";
 import { PlacePicker } from "@/components/ui/PlacePicker";
-import { Colors, Fonts } from "@/constants/constants";
+import { Colors, Fonts, RESET_TIME_CONFIG } from "@/constants/constants";
 import { useModalContext } from "@/hooks/ModalProvider";
 import { getAppConfig } from "@/lib/getAppConfig";
 import { getUser } from "@/lib/getUser";
@@ -15,6 +15,7 @@ import tw from "twrnc";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { useConnection } from "@/hooks/useConnection";
 import { LoadingModal } from "@/components/modals/LoadingModal";
+import { ValidationModal } from "@/components/modals/ValidationModal";
 
 export default function Login() {
   const { hasConnection } = useConnection();
@@ -28,10 +29,11 @@ export default function Login() {
     data: dataState,
     config,
     setConfig,
-    hasSession: hasSeccion,
+    hasSession,
     startSession,
     isWorking,
     checkSession,
+    endSession,
   } = useAppState();
 
   const [data, setData] = useState<{
@@ -74,18 +76,17 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    const FIVE_HOURS = 5 * 60 * 60 * 1000;
-
     const updateConfigIfNeeded = async () => {
-      const { lastConfigUpdate } = useAppState.getState();
+      const { lastConfigUpdate, setLastConfigUpdate } = useAppState.getState();
       const now = Date.now();
 
-      if (!lastConfigUpdate || now - lastConfigUpdate > FIVE_HOURS) {
+      if (!lastConfigUpdate || now - lastConfigUpdate > RESET_TIME_CONFIG) {
         showModal("loading", "Actualizando Datos");
         try {
           const { config } = await getAppConfig();
           if (config) {
             useAppState.getState().setConfig(config);
+            setLastConfigUpdate(now);
           }
         } catch (error) {
           console.error("Error cargando configuración:", error);
@@ -94,10 +95,8 @@ export default function Login() {
         }
       }
     };
-
     updateConfigIfNeeded();
-
-    const interval = setInterval(updateConfigIfNeeded, FIVE_HOURS);
+    const interval = setInterval(updateConfigIfNeeded, RESET_TIME_CONFIG);
     return () => clearInterval(interval);
   }, []);
 
@@ -105,7 +104,13 @@ export default function Login() {
     let interval: number;
 
     const init = async () => {
-      if (dataState.dni && dataState.name && dataState.place && isWorking) {
+      if (
+        dataState.dni &&
+        dataState.password &&
+        dataState.name &&
+        dataState.place &&
+        isWorking
+      ) {
         router.replace("/home");
         return;
       }
@@ -113,6 +118,7 @@ export default function Login() {
       if (
         dataState.dni &&
         dataState.name &&
+        dataState.password &&
         dataState.place &&
         checkSession()
       ) {
@@ -120,7 +126,7 @@ export default function Login() {
         setData(dataState);
         return;
       } else {
-        setData({});
+        setData({ ...data, name: undefined });
       }
     };
 
@@ -135,11 +141,65 @@ export default function Login() {
     setDisabled(
       (data.dni?.length || 0) === 0 ||
         (data.name?.length || 0) === 0 ||
-        (data.password?.length || 0) === 0
+        (data.password?.length || 0) === 0 ||
+        data.place === undefined
     );
   }, [data]);
 
-  const onClick = () => {
+  const onChangeUser = async (userId: string) => {
+    if (!hasSession) {
+      if (userId.length < 8) return;
+      showModal("loading", "Buscando usuario");
+      try {
+        const { name } = await getUser({ dni: userId });
+        if (name) {
+          setData((prev) => ({ ...prev, dni: userId, name }));
+        } else {
+          showModal("error", "El usuario no fue encontrado");
+        }
+      } finally {
+        hideModal("loading");
+      }
+      return;
+    }
+
+    if (userId !== dataState.dni) {
+      showModal(
+        "validation",
+        "Si cambia los datos se cerrar sesión",
+        (confirm) => {
+          if (confirm) {
+            endSession();
+            setData({ ...data, dni: userId });
+          } else {
+            setData({ ...dataState });
+          }
+        }
+      );
+    }
+  };
+
+  const onChangePassword = (password: string) => {
+    if (password !== dataState.password && checkSession()) {
+      showModal(
+        "validation",
+        "Si cambia los datos se cerrar sesión",
+        (confirm) => {
+          if (confirm) {
+            endSession();
+            setData({ ...data, password });
+          } else {
+            setData({ ...dataState });
+          }
+        }
+      );
+      return;
+    }
+
+    setData({ ...data, password });
+  };
+
+  const onLogin = () => {
     if (!dni || !name || !place || !password) {
       showModal("error", "Por favor complete todos los campos");
       return;
@@ -148,7 +208,7 @@ export default function Login() {
       showModal("error", "El DNI debe tener 8 caracteres");
       return;
     }
-    if (!hasSeccion) {
+    if (!hasSession) {
       showModal("loading", "Iniciando seccion");
       loginUser({ dni, password }).then(({ correct }) => {
         hideModal("loading");
@@ -163,24 +223,6 @@ export default function Login() {
       });
     } else {
       router.replace("/home");
-    }
-  };
-
-  const onChangeUser = async (userId: string) => {
-    setData((prev) => ({ ...prev, dni: userId }));
-    if (!hasSeccion) {
-      if (userId.length < 8) return;
-      showModal("loading", "Buscando usuario");
-      try {
-        const { name } = await getUser({ dni: userId });
-        if (name) {
-          setData((prev) => ({ ...prev, dni: userId, name }));
-        } else {
-          showModal("error", "El usuario no fue encontrado");
-        }
-      } finally {
-        hideModal("loading");
-      }
     }
   };
 
@@ -213,14 +255,14 @@ export default function Login() {
             placeholder="Usuario"
             keyboardType="number-pad"
             maxLength={8}
-            defaultValue={dni}
+            value={dni}
             onChangeText={onChangeUser}
           />
           <Input
             placeholder="Contraseña*"
             keyboardType="default"
-            defaultValue={password}
-            onChangeText={(password) => setData({ ...data, password })}
+            value={password}
+            onChangeText={onChangePassword}
             secureTextEntry
           />
         </View>
@@ -246,7 +288,7 @@ export default function Login() {
           text="Comencemos"
           style={tw`w-[209px] h-[52px] p-0 items-center justify-center`}
           disabled={disabled}
-          onPress={onClick}
+          onPress={onLogin}
         />
       </View>
       <Image
@@ -255,6 +297,7 @@ export default function Login() {
       />
       <ErrorModal />
       <LoadingModal />
+      <ValidationModal />
     </View>
   );
 }

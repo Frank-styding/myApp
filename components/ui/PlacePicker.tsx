@@ -1,6 +1,7 @@
 import { Colors, Fonts } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
+
 import {
   FlatList,
   Modal,
@@ -10,6 +11,7 @@ import {
   TouchableOpacity,
   View,
   ViewStyle,
+  Image,
 } from "react-native";
 import tw from "twrnc";
 interface PickerProps {
@@ -70,15 +72,15 @@ export const PlacePicker = ({
           style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
         >
           <Pressable
-            style={tw`bg-[${Colors.black}] w-72 h-[55%] rounded-xl p-4 items-center`}
+            style={tw`bg-[${Colors.black}] w-72 h-[57%] rounded-xl p-4 items-center`}
             onPress={() => {}}
           >
             <Text
-              style={tw`text-[19px] font-bold text-[${Colors.primary}] mb-6 text-center`}
+              style={tw`h-[50px] text-[19px] font-bold text-[${Colors.primary}] mb-6 text-center`}
             >
               ¡Seleccione su fundo, Capitán!
             </Text>
-            <View style={tw`flex-1`}>
+            <View style={tw`h-[75]`}>
               <FlatList
                 data={options}
                 contentContainerStyle={tw`items-center gap-3`}
@@ -101,6 +103,10 @@ export const PlacePicker = ({
                 )}
               />
             </View>
+            <Image
+              source={require("@/assets/images/logo/icon-company.png")}
+              style={tw`w-[60px] h-[80px]`}
+            />
           </Pressable>
         </Pressable>
       </Modal>

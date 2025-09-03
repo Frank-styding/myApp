@@ -56,7 +56,6 @@ const defaultConfig: IConfig = {
     { label: "Causas climatológicas", value: "problemas climaticos" },
     { label: "Charlas & Reuniones", value: "charla" },
     { label: "Pausas Activas", value: "pausa activa" },
-    { label: "Repaso", value: "repaso" },
   ],
   select_options: [
     { label: "N°1", value: "1" },
@@ -80,10 +79,6 @@ a la acción con todo lo necesario.`,
     charla: {
       title: "¡Un momento de estrategia, Capitán!",
       message: `Tu equipo está planificando los siguientes pasos. La comunicación es la base del éxito.`,
-    },
-    repaso: {
-      title: "¡Capitán, un momento de reflexión!",
-      message: `El equipo está revisando los detalles. Analizar el día es clave para mejorar mañana.`,
     },
     "traslado interno": {
       title: "¡En movimiento, Capitán!",

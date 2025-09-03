@@ -18,6 +18,7 @@ interface InputProps {
   onChangeText?: (text: string) => void;
   style?: TextStyle;
   defaultValue?: string;
+  value?: string;
   secureTextEntry?: boolean; // 👈 nuevo: soporta modo password
 }
 
@@ -29,6 +30,7 @@ export const Input = ({
   placeholder,
   style,
   defaultValue,
+  value,
   secureTextEntry,
 }: InputProps) => {
   const [secure, setSecure] = useState(!!secureTextEntry);
@@ -51,6 +53,7 @@ export const Input = ({
         defaultValue={defaultValue}
         onChangeText={onChangeText}
         secureTextEntry={secure}
+        value={value}
       />
       {secureTextEntry && (
         <TouchableOpacity onPress={() => setSecure(!secure)}>

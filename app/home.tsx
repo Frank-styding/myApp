@@ -7,64 +7,88 @@ import { useSaveData } from "@/hooks/useSaveData";
 import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { SafeAreaView, View } from "react-native";
+import { useEffect } from "react";
+import { SafeAreaView } from "react-native";
 import tw from "twrnc";
 import { getImage } from "@/lib/getImage";
 import { isPastSixThirty } from "@/lib/isPastSixThirty";
+import { getBase64Hash, saveImageLocally } from "@/lib/saveImageLocally";
 
 export default function Home() {
   const { showModal } = useModalContext();
   const { saveData } = useSaveData();
-  const [active, setActive] = useState(false);
   const router = useRouter();
-  const { data, setData, config, setImage, image } = useAppState();
+  const {
+    data,
+    setData,
+    config,
+    setImage,
+    image,
+    imageHash,
+    checkSession,
+    setIsWorking,
+    setImageHash,
+    isWorking,
+  } = useAppState();
 
   useEffect(() => {
     if (!data.dni) return;
-    getImage({ dni: data.dni }).then(({ image: imageData }) => {
-      if (imageData) {
-        const uri = `data:${imageData.mimeType};base64,${imageData.base64}`;
-        setImage(uri);
+    getImage({ dni: data.dni }).then(async ({ image: imageData }) => {
+      if (imageData && data.dni) {
+        const newHash = await getBase64Hash(imageData.base64);
+        if (newHash !== imageHash) {
+          const localUri = await saveImageLocally(imageData.base64, data.dni);
+          setImage(localUri);
+          setImageHash(newHash);
+        }
+        /*       const uri = `data:${imageData.mimeType};base64,${imageData.base64}`; */
+        const localUri = await saveImageLocally(imageData.base64, data.dni);
+        setImage(localUri);
       }
     });
   }, []);
 
-  const onClick = (key: string) => {
+  const onClick = async (key: string) => {
     if (key === "button_1") {
       if (isPastSixThirty()) {
-        saveData(STATES["noTrabajando"], { ...data, time: "6:30:00" });
+        await saveData(STATES["noTrabajando"], { ...data, time: "6:30:00" });
       }
-      saveData(STATES["trabajando"], { ...data });
-      setActive(true);
+      setIsWorking(true);
+      await saveData(STATES["trabajando"], { ...data });
+      /* setActive(true); */
       return;
     }
     if (key === "button_2") {
-      setData({});
-      saveData(STATES["finJornada"], { ...data });
+      if (checkSession()) {
+        setIsWorking(false);
+      } else {
+        setData({});
+      }
       router.replace("/login");
+      await saveData(STATES["finJornada"], { ...data });
       return;
     }
     showModal("return", config.messages[key]);
-    saveData(key, { ...data });
+    await saveData(key, { ...data });
   };
 
-  const onReturn = () => {
-    saveData(STATES["trabajando"], { ...data });
+  const onReturn = async () => {
+    await saveData(STATES["trabajando"], { ...data });
   };
 
   const callback = () => {
-    setActive(false);
+    setIsWorking(false);
+    /* setActive(false); */
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 pb-13`}>
+    <SafeAreaView style={tw`flex-1 pb-20`}>
       <Header
         name={data.name as string}
         place={data.place as string}
         image={image}
       />
-      <Buttons options={config.buttons} active={active} onClick={onClick} />
+      <Buttons options={config.buttons} active={isWorking} onClick={onClick} />
       <ReturnModal onClick={onReturn} />
       <ChangeModal callback={callback} />
     </SafeAreaView>

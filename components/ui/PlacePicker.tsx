@@ -25,7 +25,7 @@ interface PickerProps {
   textStyle?: TextStyle;
 }
 
-export const Picker = ({
+export const PlacePicker = ({
   placeholder,
   options,
   value,
@@ -70,29 +70,37 @@ export const Picker = ({
           style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
         >
           <Pressable
-            style={tw`bg-[${Colors.background}] w-72 rounded-xl p-4 items-center`}
+            style={tw`bg-[${Colors.black}] w-72 h-[55%] rounded-xl p-4 items-center`}
             onPress={() => {}}
           >
-            <Text style={tw`text-[20px] font-bold text-white mb-6`}>
-              Elige una opción
+            <Text
+              style={tw`text-[19px] font-bold text-[${Colors.primary}] mb-6 text-center`}
+            >
+              ¡Seleccione su fundo, Capitán!
             </Text>
-            <FlatList
-              data={options}
-              keyExtractor={(item) => item.value}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={tw`p-3 rounded-lg min-w-full items-center mb-2 bg-[#bababa]`}
-                  onPress={() => {
-                    onSelect?.(item.value);
-                    setVisible(false);
-                  }}
-                >
-                  <Text style={tw`text-black text-[18px] font-bold`}>
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
+            <View style={tw`flex-1`}>
+              <FlatList
+                data={options}
+                contentContainerStyle={tw`items-center gap-3`}
+                showsVerticalScrollIndicator={true}
+                keyExtractor={(item) => item.value}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={tw`p-3 rounded-lg min-w-[90%] min-h-[40px] items-center bg-[${Colors.black1}]`}
+                    onPress={() => {
+                      onSelect?.(item.value);
+                      setVisible(false);
+                    }}
+                  >
+                    <Text
+                      style={tw`text-[${Colors.light0}] text-[18px] font-bold`}
+                    >
+                      {`Fundo ${item.label}`}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
           </Pressable>
         </Pressable>
       </Modal>

@@ -13,29 +13,38 @@ export function Buttons({
   active?: boolean;
 }) {
   return (
-    <View style={tw`flex-17`}>
-      <View style={tw`flex-1 items-center justify-center`}>
+    <View style={tw`flex-21 mt-3`}>
+      <View style={tw`flex-3  items-center justify-center`}>
         <ButtonText
           text="Comencemos a cosechar"
-          style={tw`w-90 items-center p-0 h-[88px] justify-center ${
+          style={tw`w-95 items-center p-0 h-[88px] justify-center ${
             active ? `bg-[${Colors.light3}]` : ""
           }`}
           disabled={active}
           onPress={() => onClick?.("button_1")}
         />
       </View>
-      <Text style={tw`text-[#d5d5d7] pl-5  text-[18px] `}>
+      <Text style={tw`text-white pl-5 py-1  text-[18px] `}>
         Tiempos de espera
       </Text>
-      <View style={tw`flex-4 justify-center items-center`}>
-        <View style={tw`flex-wrap flex-row gap-3 max-w-[360px]`}>
+      <View style={tw`flex-9  pt-2 items-center`}>
+        <View style={tw`flex-wrap flex-row gap-[15px] max-w-[370px]`}>
           {options.map(({ label, value }) => (
             <TouchableOpacity
-              style={tw`w-43 h-20 ${
+              style={[
+                tw`w-[177px] h-[80px] rounded-[16px] items-center justify-center p-3`,
                 active
-                  ? `bg-[${Colors.black}] shadow-xl shadow-[${Colors.primary}]`
-                  : `bg-[${Colors.light3}]`
-              } rounded-[8px] items-center justify-center p-3`}
+                  ? {
+                      backgroundColor: Colors.black,
+                      // Shadow iOS
+                      shadowColor: Colors.primary,
+                      shadowOffset: { width: 0, height: 4 },
+                      shadowOpacity: 1,
+                      shadowRadius: 4,
+                      elevation: 10,
+                    }
+                  : { backgroundColor: Colors.light3 },
+              ]}
               onPress={() => onClick?.(value)}
               disabled={!active}
               key={label}
@@ -52,11 +61,11 @@ export function Buttons({
           ))}
         </View>
       </View>
-      <View style={tw`flex-1 items-center justify-center mt-1`}>
+      <View style={tw`flex-4 items-center  pt-8`}>
         <ButtonText
           disabled={!active}
           text="Finalizar cosecha"
-          style={tw`w-90 items-center p-0 h-[88px] justify-center ${
+          style={tw`w-95 items-center p-0 h-[88px] justify-center ${
             !active ? `bg-[${Colors.light3}]` : ""
           }`}
           onPress={() => onClick?.("button_2")}

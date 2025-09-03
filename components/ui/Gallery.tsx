@@ -102,8 +102,8 @@ export const Gallery = ({
   }));
 
   return (
-    <SafeAreaView style={tw`flex-1`}>
-      <Animated.View style={[{ flex: 10 }, animatedStyle]}>
+    <SafeAreaView style={tw`flex-1 gap-6`}>
+      <Animated.View style={[{ flex: 9 }, animatedStyle]}>
         {pages[page]}
       </Animated.View>
 

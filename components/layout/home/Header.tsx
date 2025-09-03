@@ -1,29 +1,47 @@
-/* import { Ionicons } from "@expo/vector-icons"; */
-import { View, Image } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import tw from "twrnc";
+import { useState } from "react";
 import { UserInfo } from "./UserInfo";
+
 export function Header({
   name,
   place,
   image,
-  onSettings,
 }: {
   name: string;
   place: string;
   image?: string;
-  onSettings?: () => void;
 }) {
+  const [loading, setLoading] = useState(false);
+
   return (
     <View
-      style={tw`flex-3 justify-between flex-row items-center px-8 content-center pt-3`}
+      style={tw`flex-4 justify-between flex-row items-end px-8 content-center`}
     >
       <UserInfo name={name} place={place} />
 
       <View
-        style={tw`w-[70px] h-[70px] rounded-full overflow-hidden items-center justify-center`}
+        style={tw`w-[70px] h-[70px] rounded-full overflow-hidden items-center justify-center bg-gray-200`}
       >
-        {image && (
-          <Image source={{ uri: image }} style={tw`w-[70px] h-[70px]`} />
+        {image ? (
+          <>
+            <Image
+              source={{ uri: image }}
+              style={tw`w-[62px] h-[62px]`}
+              onLoadStart={() => {
+                if (!image) {
+                  setLoading(true);
+                }
+              }}
+              onLoadEnd={() => {
+                if (!image) {
+                  setLoading(false);
+                }
+              }}
+            />
+          </>
+        ) : (
+          <ActivityIndicator size="small" color="#000" />
         )}
       </View>
     </View>

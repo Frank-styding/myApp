@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Image, Modal, Pressable, Text, View } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
-import { Picker } from "../ui/Picker";
+import { PlacePicker } from "../ui/PlacePicker";
 import { useSaveData } from "@/hooks/useSaveData";
 import { Colors, STATES } from "@/constants/constants";
 
@@ -19,7 +19,7 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
     callback?.();
     saveData(STATES["finJornada"], { ...data });
     setData({ ...data, place: option }, () => {
-      saveData(STATES["transladoFundo"], { ...data, value: option }).then(
+      saveData(STATES["transladoFundo"], { ...data, place: option }).then(
         () => {
           hideModal("change");
         }
@@ -50,7 +50,7 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
             </View>
             <View>
               <Text style={tw`text-[18px] text-white`}>Nuevo Fundo</Text>
-              <Picker
+              <PlacePicker
                 placeholder="N° de fundo"
                 style={tw`w-[35] bg-[${Colors.black}]`}
                 textStyle={tw`text-[${Colors.light3}] text-[18px]`}

@@ -35,7 +35,6 @@ export const loginUser = async ({
     return {
       ok: true,
       correct: json.correct,
-      image: json.image,
     };
   }
 

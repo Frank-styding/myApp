@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import {
   useSharedValue,
@@ -14,8 +14,10 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
   const width = useSharedValue(widthInitial);
   const height = useSharedValue(heightInitial);
   const opacity = useSharedValue(0);
+  const opacity1 = useSharedValue(1);
   const opacityView = useSharedValue(0);
   const [active, setActive] = useState(false);
+  const activeRef = useRef(false);
   const x = useSharedValue(0);
   const y = useSharedValue(0);
 
@@ -49,6 +51,10 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
     opacity: opacityView.value,
   }));
 
+  const animatedLogo2Style = useAnimatedStyle(() => ({
+    opacity: opacity1.value,
+  }));
+
   const runStep = useCallback(
     (index: number) => {
       if (index === 0) {
@@ -73,7 +79,9 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
 
         // Siguiente step después de 1300ms (500ms delay + 800ms)
         setTimeout(() => runStep(2), 1300);
+        activeRef.current = true;
       } else if (index === 2) {
+        opacity1.value = withDelay(500, withTiming(0, { duration: 300 }));
         // Paso 3: Mover arriba, reducir tamaño y mostrar contenido
         y.value = withDelay(
           500,
@@ -89,10 +97,13 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
           500,
           withTiming(heightInitial * 0.8, { duration: 300 })
         );
+
         opacityView.value = withDelay(500, withTiming(1, { duration: 300 }));
 
         // Activar después de la animación
-        setTimeout(() => setActive(true), 800);
+        setTimeout(() => {
+          setActive(true);
+        }, 800);
       }
     },
     [widthInitial, heightInitial, screenHeightSV]
@@ -106,6 +117,8 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
     animatedLogoStyle,
     animatedLogoTitleStyle,
     animatedViewStyle,
+    activeRef,
+    animatedLogo2Style,
     active,
   };
 }

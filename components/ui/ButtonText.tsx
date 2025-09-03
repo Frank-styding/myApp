@@ -1,4 +1,4 @@
-import { Fonts } from "@/constants/constants";
+import { Colors, Fonts } from "@/constants/constants";
 import { Text, TextStyle, TouchableOpacity, ViewStyle } from "react-native";
 import tw from "twrnc";
 interface ButtonProps {
@@ -22,7 +22,9 @@ export const ButtonText = ({
     <TouchableOpacity
       disabled={disabled}
       style={[
-        tw`bg-[#d5ff5f] py-4 px-10 rounded-[16px] items-center justify-center`,
+        tw`bg-[${
+          disabled ? Colors.light1 : Colors.primary
+        }] py-4 px-10 rounded-[16px] items-center justify-center`,
         style,
         {
           shadowColor: "#000000",
@@ -36,7 +38,9 @@ export const ButtonText = ({
     >
       <Text
         style={[
-          tw`text-[20px] font-bold`,
+          tw`text-[18px] font-bold text-[${
+            disabled ? Colors.light0 : Colors.black
+          }]`,
           { fontFamily: fontFamily || Fonts["Poppins-Bold"] },
           textStyle,
         ]}

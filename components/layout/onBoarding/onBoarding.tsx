@@ -1,7 +1,7 @@
 import { Gallery } from "@/components/ui/Gallery";
 import { useAnimatedLogo } from "@/hooks/useAnimatedLogo";
 import React from "react";
-import { View } from "react-native";
+import { View, Image } from "react-native";
 import { DefaultPage } from "./DefaultPage";
 import tw from "twrnc";
 import { EndPage } from "./EndPage";
@@ -17,10 +17,19 @@ export function OnBoarding({
     animatedLogoStyle,
     animatedViewStyle,
     active,
+    animatedLogo2Style,
   } = useAnimatedLogo(84, 110);
   return (
     <View style={tw`flex-1`}>
-      <Animated.View style={[tw`flex-1 `, animatedViewStyle]}>
+      <Animated.Image
+        source={require("@/assets/images/logo/logo2.png")}
+        style={[
+          animatedLogo2Style,
+          tw`absolute w-[51px] h-[31px] bottom-[40px] left-[50%] translate-x-[-25.5px]`,
+          { zIndex: 1 },
+        ]}
+      />
+      <Animated.View style={[tw`flex-1 `, animatedViewStyle, { zIndex: 2 }]}>
         <Gallery
           active={active}
           pages={[
@@ -48,6 +57,7 @@ Registra fácilmente las horas de tu equipo.
           ]}
         />
       </Animated.View>
+
       <Animated.Image
         source={require("@/assets/images/logo/icon-company-name.png")}
         style={[tw`w-[115px] h-[110px]  absolute`, animatedLogoTitleStyle]}

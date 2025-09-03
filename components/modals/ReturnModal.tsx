@@ -16,7 +16,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
         >
           <Image
             source={require("@/assets/images/logo/logo.png")}
-            style={tw`w-[110px] h-[70px] mb-4`}
+            style={tw`w-[140px] h-[80px] mb-4`}
           />
           <Text style={tw`text-white text-[18px] text-center font-bold`}>
             {title}

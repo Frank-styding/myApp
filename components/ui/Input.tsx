@@ -1,6 +1,14 @@
 import { Colors, Fonts } from "@/constants/constants";
-import { KeyboardTypeOptions, TextInput, TextStyle } from "react-native";
+import {
+  KeyboardTypeOptions,
+  TextInput,
+  TextStyle,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import tw from "twrnc";
+import { Ionicons } from "@expo/vector-icons"; // expo install @expo/vector-icons
+import { useState } from "react";
 
 interface InputProps {
   placeholder?: string;
@@ -9,6 +17,8 @@ interface InputProps {
   fontFamily?: string;
   onChangeText?: (text: string) => void;
   style?: TextStyle;
+  defaultValue?: string;
+  secureTextEntry?: boolean; // 👈 nuevo: soporta modo password
 }
 
 export const Input = ({
@@ -18,18 +28,39 @@ export const Input = ({
   onChangeText,
   placeholder,
   style,
+  defaultValue,
+  secureTextEntry,
 }: InputProps) => {
+  const [secure, setSecure] = useState(!!secureTextEntry);
+
   return (
-    <TextInput
-      style={[
-        { fontFamily: fontFamily || Fonts["Poppins-Bold"] },
-        tw`bg-[${Colors.light3}] w-full h-10 rounded-[8px] pl-3 text-[16px] text-[${Colors.black}] font-bold `,
-        style,
-      ]}
-      keyboardType={keyboardType}
-      placeholder={placeholder}
-      maxLength={maxLength}
-      onChangeText={onChangeText}
-    />
+    <View
+      style={tw`flex-row items-center bg-[${Colors.light3}] w-full h-10 rounded-[8px] px-3`}
+    >
+      <TextInput
+        style={[
+          {
+            fontFamily: fontFamily || Fonts["Poppins-Bold"],
+          },
+          tw`flex-1 text-[16px] text-[${Colors.black}] font-bold`,
+          style,
+        ]}
+        keyboardType={keyboardType}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        defaultValue={defaultValue}
+        onChangeText={onChangeText}
+        secureTextEntry={secure}
+      />
+      {secureTextEntry && (
+        <TouchableOpacity onPress={() => setSecure(!secure)}>
+          <Ionicons
+            name={secure ? "eye-off-outline" : "eye-outline"}
+            size={20}
+            color="gray"
+          />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };

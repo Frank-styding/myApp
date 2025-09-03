@@ -1,7 +1,12 @@
 // hooks/useModal.ts
 import { useCallback, useState } from "react";
 
-export type ModalType = "change" | "error" | "return" | "validation";
+export type ModalType =
+  | "change"
+  | "error"
+  | "return"
+  | "validation"
+  | "loading";
 
 export interface ModalState {
   change: {
@@ -20,6 +25,10 @@ export interface ModalState {
     visible: boolean;
     message: string;
   };
+  loading: {
+    visible: boolean;
+    message: string;
+  };
 }
 
 interface ModalActions {
@@ -34,6 +43,7 @@ export const useModal = (): ModalActions => {
     error: { visible: false, message: "" },
     validation: { visible: false, message: "" },
     return: { visible: false, title: "", message: "" },
+    loading: { visible: false, message: "Cargando..." },
   });
 
   const showModal = useCallback((type: ModalType, data?: any) => {
@@ -57,6 +67,11 @@ export const useModal = (): ModalActions => {
               message: data?.message || "",
             },
           };
+        case "loading":
+          return {
+            ...prev,
+            loading: { visible: true, message: data || "Cargando..." },
+          };
         default:
           return prev;
       }
@@ -77,6 +92,8 @@ export const useModal = (): ModalActions => {
             ...prev,
             validation: { ...prev.validation, visible: false },
           };
+        case "loading":
+          return { ...prev, loading: { ...prev.loading, visible: false } };
         default:
           return prev;
       }

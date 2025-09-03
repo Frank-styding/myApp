@@ -1,13 +1,34 @@
 import { useEffect, useCallback, useState } from "react";
 import { Platform, PermissionsAndroid } from "react-native";
 import BackgroundService from "react-native-background-actions";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // 👈 Importar AsyncStorage
 import { backgroundSendTask } from "@/services/backgroundService/backgroundService";
 import { BackgroundState } from "@/lib/backgroundState";
 
+const PERMISSION_KEY = "hasNotificationPermission";
+
 export const useBackgroundSync = () => {
   const [isRunning, setIsRunning] = useState(false);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+
+  const savePermission = async (granted: boolean) => {
+    try {
+      await AsyncStorage.setItem(PERMISSION_KEY, granted ? "true" : "false");
+      setHasPermission(granted);
+    } catch (e) {
+      console.error("Error guardando permisos:", e);
+    }
+  };
+
   const checkPermissions = useCallback(async () => {
+    const stored = await AsyncStorage.getItem(PERMISSION_KEY);
+    if (stored !== null) {
+      const granted = stored === "true";
+      setHasPermission(granted);
+      return granted;
+    }
     let granted = true;
+
     if (Platform.OS === "android") {
       if (Platform.Version >= 33) {
         const notificationGranted = await PermissionsAndroid.request(
@@ -16,6 +37,8 @@ export const useBackgroundSync = () => {
         granted = notificationGranted === PermissionsAndroid.RESULTS.GRANTED;
       }
     }
+
+    await savePermission(granted);
     return granted;
   }, []);
 
@@ -54,7 +77,6 @@ export const useBackgroundSync = () => {
     }
   }, []);
 
-  // Verificar estado del servicio
   useEffect(() => {
     const checkService = async () => {
       const running = await BackgroundService.isRunning();
@@ -68,6 +90,7 @@ export const useBackgroundSync = () => {
 
   return {
     isRunning,
+    hasPermission,
     startBackgroundTask,
     stopBackgroundTask,
     checkPermissions,

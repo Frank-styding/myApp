@@ -9,6 +9,13 @@ export default {
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    runtimeVersion: "1.0.0",
+    updates: {
+      url: "https://u.expo.dev/b1e6bfac-c9dd-4331-b9c5-ce39bc39b728",
+      checkAutomatically: "ON_LOAD",
+      fallbackToCacheTimeout: 0,
+    },
+
     android: {
       adaptiveIcon: {
         foregroundImage: "./assets/images/appIcon/adaptive-icon.png",
@@ -52,10 +59,10 @@ export default {
     },
     extra: {
       API_URL: process.env.API_URL,
-      eas: {
-        projectId: "cb01b46b-7902-4d7e-8399-538886449c25",
-      },
       router: {},
+      eas: {
+        projectId: "b1e6bfac-c9dd-4331-b9c5-ce39bc39b728",
+      },
       /*   jsEngine: "hermes", */
     },
   },

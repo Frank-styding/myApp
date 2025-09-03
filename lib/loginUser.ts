@@ -35,6 +35,7 @@ export const loginUser = async ({
     return {
       ok: true,
       correct: json.correct,
+      alreadyLogged: json.alreadyLogged,
     };
   }
 

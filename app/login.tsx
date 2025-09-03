@@ -2,7 +2,12 @@ import { ErrorModal } from "@/components/modals/ErrorModal";
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Input } from "@/components/ui/Input";
 import { PlacePicker } from "@/components/ui/PlacePicker";
-import { Colors, Fonts, RESET_TIME_CONFIG } from "@/constants/constants";
+import {
+  Colors,
+  Fonts,
+  RESET_TIME_CONFIG,
+  SESSION_TIME,
+} from "@/constants/constants";
 import { useModalContext } from "@/hooks/ModalProvider";
 import { getAppConfig } from "@/lib/getAppConfig";
 import { getUser } from "@/lib/getUser";
@@ -43,7 +48,9 @@ export default function Login() {
     password?: string;
     error?: string;
   }>({});
-  const [disabled, setDisabled] = useState(true);
+  const [disabledLogin, setDisabledLogin] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+
   const hasInitialized = useRef(false);
 
   const { dni, name, place, password } = data;
@@ -101,8 +108,6 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    let interval: number;
-
     const init = async () => {
       if (
         dataState.dni &&
@@ -115,30 +120,30 @@ export default function Login() {
         return;
       }
 
-      if (
-        dataState.dni &&
-        dataState.name &&
-        dataState.password &&
-        dataState.place &&
-        checkSession()
-      ) {
-        setDisabled(false);
-        setData(dataState);
-        return;
+      if (checkSession()) {
+        if (
+          dataState.dni &&
+          dataState.name &&
+          dataState.password &&
+          dataState.place
+        ) {
+          setDisabledLogin(false);
+          setDisabled(true);
+          setData(dataState);
+          return;
+        }
       } else {
-        setData({ ...data, name: undefined });
+        setDisabled(false);
+        setDisabledLogin(true);
+        setData({});
       }
     };
 
     init();
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
   }, [hasConnection, setConfig, dataState]);
 
   useEffect(() => {
-    setDisabled(
+    setDisabledLogin(
       (data.dni?.length || 0) === 0 ||
         (data.name?.length || 0) === 0 ||
         (data.password?.length || 0) === 0 ||
@@ -211,12 +216,15 @@ export default function Login() {
     }
     if (!hasSession) {
       showModal("loading", "Iniciando seccion");
-      loginUser({ dni, password }).then(({ correct }) => {
+      loginUser({ dni, password }).then(({ correct, alreadyLogged }) => {
         hideModal("loading");
+        if (alreadyLogged) {
+          showModal("error", "El usuario ya fue registrado");
+          return;
+        }
         if (correct) {
-          const sessionDurationMs = 60 * 60 * 1000; //! revisar de donde obtener este niumero
           setDataState(data);
-          startSession(sessionDurationMs);
+          startSession(SESSION_TIME);
           router.replace("/home");
         } else {
           showModal("error", "La contraseña es incorrecta");
@@ -256,14 +264,16 @@ export default function Login() {
             placeholder="Usuario"
             keyboardType="number-pad"
             maxLength={8}
-            value={dni}
+            defaultValue={dni}
+            disabled={disabled}
             onChangeText={onChangeUser}
           />
           <Input
             placeholder="Contraseña*"
             keyboardType="default"
-            value={password}
+            defaultValue={password}
             onChangeText={onChangePassword}
+            disabled={disabled}
             secureTextEntry
           />
         </View>
@@ -288,7 +298,7 @@ export default function Login() {
         <ButtonText
           text="Comencemos"
           style={tw`w-[209px] h-[52px] p-0 items-center justify-center`}
-          disabled={disabled}
+          disabled={disabledLogin}
           onPress={onLogin}
         />
       </View>

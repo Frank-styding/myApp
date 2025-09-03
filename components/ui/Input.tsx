@@ -19,7 +19,8 @@ interface InputProps {
   style?: TextStyle;
   defaultValue?: string;
   value?: string;
-  secureTextEntry?: boolean; // 👈 nuevo: soporta modo password
+  secureTextEntry?: boolean;
+  disabled?: boolean;
 }
 
 export const Input = ({
@@ -32,6 +33,7 @@ export const Input = ({
   defaultValue,
   value,
   secureTextEntry,
+  disabled,
 }: InputProps) => {
   const [secure, setSecure] = useState(!!secureTextEntry);
 
@@ -53,6 +55,7 @@ export const Input = ({
         defaultValue={defaultValue}
         onChangeText={onChangeText}
         secureTextEntry={secure}
+        editable={!disabled}
         value={value}
       />
       {secureTextEntry && (

@@ -35,4 +35,5 @@ export const STATES = {
   transladoFundo: "translado de fundo",
   horasExtra: "horas extra",
 };
-export const RESET_TIME_CONFIG = 7 * 24 * 60 * 60 * 1000;
+export const RESET_TIME_CONFIG = 3 * 60 * 60 * 1000;
+export const SESSION_TIME = 7 * 24 * 60 * 60 * 1000;

@@ -61,7 +61,7 @@ export function Buttons({
           ))}
         </View>
       </View>
-      <View style={tw`flex-4 items-center  pt-8`}>
+      <View style={tw`flex-4 items-center  pt-18`}>
         <ButtonText
           disabled={!active}
           text="Finalizar cosecha"

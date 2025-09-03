@@ -148,6 +148,7 @@ export default function Login() {
 
   const onChangeUser = async (userId: string) => {
     if (!hasSession) {
+      setData((prev) => ({ ...prev, dni: userId }));
       if (userId.length < 8) return;
       showModal("loading", "Buscando usuario");
       try {

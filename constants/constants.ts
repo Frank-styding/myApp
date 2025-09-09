@@ -18,8 +18,8 @@ export const Fonts: Record<keyof typeof fontsMap, string> = {
 // ==================== COLORS ====================
 export const Colors = {
   primary: "#D5FF5F",
-  /*  background: "#2D2D35", */
-  background: "#FF0000FF",
+  background: "#2D2D35",
+  /*   background: "#FF0000FF", */
   black: "#000000",
   light0: "#FFFFFF",
   light1: "#CECECE",

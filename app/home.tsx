@@ -2,7 +2,7 @@ import { Buttons } from "@/components/layout/home/Buttons";
 import { Header } from "@/components/layout/home/Header";
 import { ChangeModal } from "@/components/modals/ChangeModal";
 import { ReturnModal } from "@/components/modals/ReturnModal";
-import { STATES } from "@/constants/constants";
+import { Colors, STATES } from "@/constants/constants";
 import { useSaveData } from "@/hooks/useSaveData";
 import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
@@ -11,12 +11,13 @@ import { useEffect } from "react";
 import { SafeAreaView } from "react-native";
 import tw from "twrnc";
 import { getImage } from "@/lib/getImage";
-import { isPastSeventeenStrict, isPastSixThirty } from "@/lib/isPastSixThirty";
+import { isPastEndTime, isPastTime } from "@/lib/isPastSixThirty";
 import { getBase64Hash, saveImageLocally } from "@/lib/saveImageLocally";
 import { ValidationModal } from "@/components/modals/ValidationModal";
+import { EndModal } from "@/components/modals/EndModal";
 
 export default function Home() {
-  const { showModal } = useModalContext();
+  const { showModal, hideModal } = useModalContext();
   const { saveData } = useSaveData();
   const router = useRouter();
   const {
@@ -32,20 +33,16 @@ export default function Home() {
     isWorking,
   } = useAppState();
 
-  useEffect(() => {
+  /*  useEffect(() => {
     const checkTime = async () => {
-      if (isPastSeventeenStrict() && isWorking) {
-        await saveData(STATES["finJornada"], { ...data });
-        setIsWorking(false);
-        showModal("validation", "Se termino la jornada", () => {
-          router.replace("/login");
-        });
+      if (isPastEndTime() && isWorking) {
+        onEndButton();
       }
     };
     const interval = setInterval(checkTime, 60 * 1000);
     checkTime();
     return () => clearInterval(interval);
-  }, [data, isWorking]);
+  }, [data, isWorking]); */
 
   useEffect(() => {
     if (!data.dni) return;
@@ -66,7 +63,7 @@ export default function Home() {
 
   const onClick = async (key: string) => {
     if (key === "button_1") {
-      if (isPastSixThirty()) {
+      if (isPastTime()) {
         await saveData(STATES["noTrabajando"], { ...data, time: "6:30:00" });
       }
       setIsWorking(true);
@@ -74,13 +71,15 @@ export default function Home() {
       return;
     }
     if (key === "button_2") {
-      if (checkSession()) {
+      //!
+      onEndButton();
+      /*       if (checkSession()) {
         setIsWorking(false);
       } else {
         setData({});
       }
       router.replace("/login");
-      await saveData(STATES["finJornada"], { ...data });
+      await saveData(STATES["finJornada"], { ...data }); */
       return;
     }
     showModal("return", config.messages[key]);
@@ -92,7 +91,30 @@ export default function Home() {
   };
   const callback = () => {
     setIsWorking(false);
+
     /* setActive(false); */
+  };
+
+  const onEndButton = async () => {
+    showModal("end");
+    /*     await saveData(STATES["finJornada"], { ...data });
+    if (checkSession()) {
+      setIsWorking(false);
+    } else {
+      setData({});
+    }
+    router.replace("/login"); */
+  };
+
+  const onClickEndModal = async (reason: string) => {
+    await saveData(STATES["finJornada"], { ...data, reason });
+    if (checkSession()) {
+      setIsWorking(false);
+    } else {
+      setData({});
+    }
+    router.replace("/login");
+    hideModal("end");
   };
   return (
     <SafeAreaView style={tw`flex-1 pb-20`}>
@@ -100,11 +122,14 @@ export default function Home() {
         name={data.name as string}
         place={data.place as string}
         image={image}
+        textStyle1={`text-[${Colors.primary}]`}
+        textStyle="text-white font-bold"
       />
       <Buttons options={config.buttons} active={isWorking} onClick={onClick} />
       <ReturnModal onClick={onReturn} />
       <ChangeModal callback={callback} />
       <ValidationModal disabledTap={true} />
+      <EndModal onClick={onClickEndModal} />
     </SafeAreaView>
   );
 }

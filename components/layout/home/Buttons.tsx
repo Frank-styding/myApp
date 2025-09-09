@@ -16,7 +16,7 @@ export function Buttons({
     <View style={tw`flex-21 mt-3`}>
       <View style={tw`flex-3  items-center justify-center`}>
         <ButtonText
-          text="Comencemos a cosechar"
+          text="¡Comencemos a cosechar!"
           style={tw`w-95 items-center p-0 h-[88px] justify-center ${
             active ? `bg-[${Colors.light3}]` : ""
           }`}
@@ -32,7 +32,7 @@ export function Buttons({
           {options.map(({ label, value }) => (
             <TouchableOpacity
               style={[
-                tw`w-[177px] h-[80px] rounded-[16px] items-center justify-center p-3`,
+                tw`w-[177px] h-[80px] rounded-[16px] items-start justify-center p-3 pl-4 pr-10`,
                 active
                   ? {
                       backgroundColor: Colors.black,
@@ -51,7 +51,7 @@ export function Buttons({
             >
               <Text
                 style={[
-                  tw`text-white text-[16px] text-center`,
+                  tw`text-white text-[16px] `,
                   { fontFamily: Fonts["Lato-Bold"] },
                 ]}
               >
@@ -64,7 +64,7 @@ export function Buttons({
       <View style={tw`flex-4 items-center  pt-18`}>
         <ButtonText
           disabled={!active}
-          text="Finalizar cosecha"
+          text="¡Finalizar la cosecha!"
           style={tw`w-95 items-center p-0 h-[88px] justify-center ${
             !active ? `bg-[${Colors.light3}]` : ""
           }`}

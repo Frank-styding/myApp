@@ -34,7 +34,7 @@ export const backgroundSendTask = async (taskData?: {
     try {
       // Check internet connectivity
       const state = await NetInfo.fetch();
-      const hasInternet = state.isConnected && state.isInternetReachable;
+      const hasInternet = state.isConnected;
 
       // Execute the background task and check if it completed all work
       const complete = await backgroundTask(hasInternet);

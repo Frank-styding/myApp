@@ -3,6 +3,7 @@ import { useModalContext } from "@/hooks/ModalProvider";
 import { Image, Modal, Text, View } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
+import { Fonts } from "@/constants/constants";
 
 export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
   const { modals, hideModal } = useModalContext();
@@ -21,12 +22,17 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
           <Text style={tw`text-white text-[18px] text-center font-bold`}>
             {title}
           </Text>
-          <Text style={tw`text-[#E0E0E0FF] text-[16px] text-center w-70`}>
+          <Text
+            style={[
+              tw`text-[#E0E0E0FF] text-[17px] text-center w-70`,
+              { fontFamily: Fonts["Lato-Bold"] },
+            ]}
+          >
             {message}
           </Text>
 
           <ButtonText
-            text="! Volvamos a cosechar !"
+            text="!Volvamos a cosechar!"
             style={tw`w-[70%] p-0 py-4 items-center mt-4`}
             textStyle={tw`text-[18px]`}
             onPress={() => {

@@ -30,7 +30,7 @@ export const sendData = async ({
   }
 
   const netState = await NetInfo.fetch();
-  if (!netState.isConnected || !netState.isInternetReachable) {
+  if (!netState.isConnected) {
     console.warn("sendData: Sin conexión a internet");
     return { ok: false };
   }
@@ -89,7 +89,7 @@ export const sendData = async ({
             items: data.map((item) => ({
               inicio: item.time,
               estado: item.state,
-              reason: item.reason,
+              razón: item.reason,
               _time: item.timeNumber,
             })),
           },

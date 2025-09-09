@@ -2,7 +2,7 @@ import withBackgroundService from "./withBackgroundService";
 export default {
   expo: {
     name: "EG Agroindustrial",
-    slug: "myApp",
+    slug: "app",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",
@@ -10,8 +10,9 @@ export default {
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     runtimeVersion: "1.0.0",
+    owner: "egagroindustrial",
     updates: {
-      url: "https://u.expo.dev/b1e6bfac-c9dd-4331-b9c5-ce39bc39b728",
+      url: "https://u.expo.dev/ea7ca90a-0d24-45d1-8011-942560391d5c",
       checkAutomatically: "ON_LOAD",
       fallbackToCacheTimeout: 0,
     },
@@ -32,7 +33,7 @@ export default {
         "android.permission.FOREGROUND_SERVICE_DATA_SYNC",
       ],
       edgeToEdgeEnabled: true,
-      package: "com.frank50pa1.myApp",
+      package: "com.ag.app",
       versionCode: 1,
       label: "EG Agroindustrial",
       gradle: {
@@ -61,9 +62,8 @@ export default {
       API_URL: process.env.API_URL,
       router: {},
       eas: {
-        projectId: "b1e6bfac-c9dd-4331-b9c5-ce39bc39b728",
+        projectId: "ea7ca90a-0d24-45d1-8011-942560391d5c",
       },
-      /*   jsEngine: "hermes", */
     },
   },
 };

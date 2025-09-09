@@ -37,21 +37,21 @@ export function OnBoarding({
               key={"page_0"}
               source={require("@/assets/images/onboarding/image1.png")}
               title="¡Bienvenido, Capitán!"
-              message="EG Agrícola será tu aliado en el campo. Registra fácilmente las horas de tu equipo y optimiza la jornada. 
+              message="EG Agroindustrial será tu aliado en el campo. Registra fácilmente las horas de tu equipo y optimiza la jornada. 
 ¿Listo para una cosecha eficiente?"
             />,
             <DefaultPage
               key={"page_1"}
               source={require("@/assets/images/onboarding/image2.png")}
-              title="¡Tu día de trabajo, Bajo control!"
-              message="EG Agrícola será tu aliado en el campo. 
+              title="¡Tu día de trabajo, bajo control!"
+              message="EG Agroindustrial será tu aliado en el campo. 
 Registra fácilmente las horas de tu equipo. 
 ¿Listo para una cosecha eficiente?"
             />,
             <EndPage
               key={"page_2"}
               source={require("@/assets/images/onboarding/image3.png")}
-              title="¡Comencemos la cosecha!"
+              title=" ¡Comencemos la cosecha!"
               onFinishOnboarding={onFinishOnboarding}
             />,
           ]}

@@ -21,6 +21,8 @@ import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { useConnection } from "@/hooks/useConnection";
 import { LoadingModal } from "@/components/modals/LoadingModal";
 import { ValidationModal } from "@/components/modals/ValidationModal";
+import { isPastEndTime } from "@/lib/isPastSixThirty";
+import { useConfigUpdater } from "@/hooks/useConfigUpdater";
 
 export default function Login() {
   const { hasConnection } = useConnection();
@@ -82,11 +84,13 @@ export default function Login() {
     initPermissions();
   }, []);
 
-  useEffect(() => {
+  useConfigUpdater(hasConnection);
+
+  /*   useEffect(() => {
     const updateConfigIfNeeded = async () => {
+      if (!hasConnection) return;
       const { lastConfigUpdate, setLastConfigUpdate } = useAppState.getState();
       const now = Date.now();
-
       if (!lastConfigUpdate || now - lastConfigUpdate > RESET_TIME_CONFIG) {
         showModal("loading", "Actualizando Datos");
         try {
@@ -105,7 +109,7 @@ export default function Login() {
     updateConfigIfNeeded();
     const interval = setInterval(updateConfigIfNeeded, RESET_TIME_CONFIG);
     return () => clearInterval(interval);
-  }, []);
+  }, []); */
 
   useEffect(() => {
     const init = async () => {
@@ -116,7 +120,8 @@ export default function Login() {
         dataState.place &&
         isWorking
       ) {
-        router.replace("/home");
+        goToHome();
+        //router.replace("/home");
         return;
       }
 
@@ -169,7 +174,7 @@ export default function Login() {
       return;
     }
 
-    if (userId !== dataState.dni) {
+    /*  if (userId !== dataState.dni) {
       showModal(
         "validation",
         "Si cambia los datos se cerrar sesión",
@@ -182,11 +187,11 @@ export default function Login() {
           }
         }
       );
-    }
+    } */
   };
 
   const onChangePassword = (password: string) => {
-    if (password !== dataState.password && checkSession()) {
+    /*    if (password !== dataState.password && checkSession()) {
       showModal(
         "validation",
         "Si cambia los datos se cerrar sesión",
@@ -200,7 +205,7 @@ export default function Login() {
         }
       );
       return;
-    }
+    } */
 
     setData({ ...data, password });
   };
@@ -215,9 +220,10 @@ export default function Login() {
       return;
     }
     if (!hasSession) {
-      showModal("loading", "Iniciando seccion");
+      showModal("loading", "Iniciando sesión");
       loginUser({ dni, password }).then(({ correct, alreadyLogged }) => {
         hideModal("loading");
+        console.log(alreadyLogged);
         if (alreadyLogged) {
           showModal("error", "El usuario ya fue registrado");
           return;
@@ -225,14 +231,24 @@ export default function Login() {
         if (correct) {
           setDataState(data);
           startSession(SESSION_TIME);
-          router.replace("/home");
+          goToHome();
+          /*   router.replace("/home"); */
         } else {
           showModal("error", "La contraseña es incorrecta");
         }
       });
     } else {
-      router.replace("/home");
+      goToHome();
+      /*  router.replace("/home"); */
     }
+  };
+
+  const goToHome = () => {
+    /*     if (isPastEndTime()) {
+      showModal("message", "Se termino la jornada");
+      return;
+    } */
+    router.replace("/home");
   };
 
   return (
@@ -245,14 +261,14 @@ export default function Login() {
       </View>
       <View style={tw`flex-3 px-3 gap-4`}>
         <View style={tw`gap-3`}>
-          <View style={tw`flex-row gap-2`}>
+          <View style={tw`flex-row gap-2 items-center`}>
             <Text
               style={[
                 tw`text-white text-[18px] `,
-                { fontFamily: Fonts["Poppins-Bold"] },
+                { fontFamily: Fonts["Lato-Bold"] },
               ]}
             >
-              Bienvenido capitán
+              Bienvenido, Capitán
             </Text>
             {name && (
               <Text style={tw`text-[${Colors.primary}] text-[20px] `}>
@@ -281,10 +297,10 @@ export default function Login() {
           <Text
             style={[
               tw`text-white text-[18px] `,
-              { fontFamily: Fonts["Poppins-Bold"] },
+              { fontFamily: Fonts["Lato-Bold"] },
             ]}
           >
-            Selecione fundo
+            Selecciona fundo
           </Text>
           <PlacePicker
             placeholder="N° de fundo"

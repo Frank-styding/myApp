@@ -10,6 +10,7 @@ export const useSaveData = () => {
       name?: string;
       place?: string;
       dni?: string;
+      reason?: string;
       password?: string;
     },
     callback?: () => void
@@ -19,6 +20,7 @@ export const useSaveData = () => {
       dni: data.dni as string,
       name: data.name as string,
       place: data.place as string,
+      reason: (data.reason as string) || " ",
       state,
     }).then(() => {
       callback?.();

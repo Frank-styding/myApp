@@ -7,6 +7,7 @@ export type ModalType =
   | "return"
   | "message"
   | "loading"
+  | "end"
   | "validation";
 
 export interface ModalState {
@@ -35,6 +36,9 @@ export interface ModalState {
     visible: boolean;
     message: string;
   };
+  end: {
+    visible: boolean;
+  };
 }
 
 interface ModalActions {
@@ -55,6 +59,7 @@ export const useModal = (): ModalActions => {
     validation: { visible: false, message: "" },
     return: { visible: false, title: "", message: "" },
     loading: { visible: false, message: "Cargando..." },
+    end: { visible: false },
   });
 
   const showModal = useCallback(
@@ -74,6 +79,11 @@ export const useModal = (): ModalActions => {
             return {
               ...prev,
               validation: { visible: true, message: data || "", callback },
+            };
+          case "end":
+            return {
+              ...prev,
+              end: { visible: true },
             };
           case "return":
             return {
@@ -110,6 +120,11 @@ export const useModal = (): ModalActions => {
           return {
             ...prev,
             message: { ...prev.message, visible: false },
+          };
+        case "end":
+          return {
+            ...prev,
+            end: { visible: false },
           };
         case "validation":
           return {

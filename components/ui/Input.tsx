@@ -39,7 +39,9 @@ export const Input = ({
 
   return (
     <View
-      style={tw`flex-row items-center bg-[${Colors.light3}] w-full h-10 rounded-[8px] px-3`}
+      style={tw`flex-row items-center bg-[${
+        disabled ? Colors.black2 : Colors.light3
+      }] w-full h-10 rounded-[8px] px-3`}
     >
       <TextInput
         style={[

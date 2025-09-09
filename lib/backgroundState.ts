@@ -8,6 +8,7 @@ export interface QueueItem {
   name: string;
   time: string;
   state: string;
+  reason: string;
   timestamp: number;
 }
 

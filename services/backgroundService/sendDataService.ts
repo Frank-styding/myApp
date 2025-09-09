@@ -68,7 +68,7 @@ export const processStoredBatches = async () => {
 
       // Check internet connection before sending
       const state = await NetInfo.fetch();
-      if (!(state.isConnected && state.isInternetReachable)) {
+      if (!state.isConnected) {
         console.log("[TASK]:❌ No connection, waiting...");
         continue;
       }

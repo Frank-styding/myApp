@@ -27,7 +27,8 @@ interface AppState {
   image?: string;
   imageHash?: string;
 
-  lastConfigUpdate?: number; // Timestamp of last configuration update
+  /*   lastConfigUpdate?: number; // Timestamp of last configuration update */
+  hasLoadedConfig: false;
 
   isWorking: boolean;
 
@@ -44,7 +45,6 @@ interface AppState {
   endSession: () => void;
   checkSession: () => boolean;
   setIsWorking: (value: boolean) => void;
-  setLastConfigUpdate: (time: number) => void; // Setter for last config update timestamp
 }
 
 // Default configuration values
@@ -56,13 +56,16 @@ const defaultConfig: IConfig = {
     { label: "Causas climatológicas", value: "problemas climaticos" },
     { label: "Charlas & Reuniones", value: "charla" },
     { label: "Pausas Activas", value: "pausa activa" },
+    { label: "Cambio de formato", value: "Cambio de formato" },
   ],
+
   select_options: [
     { label: "N°1", value: "1" },
     { label: "N°2", value: "2" },
     { label: "N°3", value: "3" },
     { label: "N°4", value: "4" },
     { label: "N°5", value: "5" },
+    { label: "N°6", value: "6" },
   ],
   messages: {
     almuerzo: {
@@ -79,6 +82,11 @@ a la acción con todo lo necesario.`,
     charla: {
       title: "¡Un momento de estrategia, Capitán!",
       message: `Tu equipo está planificando los siguientes pasos. La comunicación es la base del éxito.`,
+    },
+    "Cambio de formato": {
+      title: "¡Cambio de formato, Capitán!",
+      message: `El equipo está ajustándose para cosechar el nuevo producto. 
+¡La versatilidad es nuestra fortaleza!`,
     },
     "traslado interno": {
       title: "¡En movimiento, Capitán!",
@@ -111,6 +119,7 @@ export const useAppState = create<AppState>()(
       isWorking: false,
       sessionStart: undefined,
       sessionDuration: 0,
+      hasLoadedConfig: false,
 
       // Update working status
       setIsWorking: (value) => {
@@ -167,9 +176,6 @@ export const useAppState = create<AppState>()(
         }
         return true;
       },
-
-      // Update last configuration update timestamp
-      setLastConfigUpdate: (time) => set({ lastConfigUpdate: time }),
     }),
     {
       // Persistence configuration

@@ -10,7 +10,7 @@ export const getAppConfig = async () => {
   }
 
   const netState = await NetInfo.fetch();
-  if (!netState.isConnected || !netState.isInternetReachable) {
+  if (!netState.isConnected) {
     console.warn("sendData: Sin conexión a internet");
     return { ok: false };
   }

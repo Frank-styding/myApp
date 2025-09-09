@@ -1,4 +1,4 @@
-package com.frank50pa1.myApp
+package com.ag.app
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

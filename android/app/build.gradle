@@ -87,9 +87,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.frank50pa1.myApp'
+    namespace 'com.ag.app'
     defaultConfig {
-        applicationId 'com.frank50pa1.myApp'
+        applicationId 'com.ag.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

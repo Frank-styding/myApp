@@ -72,23 +72,23 @@ export const PlacePicker = ({
           style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
         >
           <Pressable
-            style={tw`bg-[${Colors.black}] w-72 h-[57%] rounded-xl p-4 items-center`}
+            style={tw`bg-[${Colors.black}] w-[368px] h-[590px] rounded-xl p-4 items-center`}
             onPress={() => {}}
           >
             <Text
-              style={tw`h-[50px] text-[19px] font-bold text-[${Colors.primary}] mb-6 text-center`}
+              style={tw`h-[50px] text-[22px] font-bold text-[${Colors.primary}] mb-6 text-center`}
             >
               ¡Seleccione su fundo, Capitán!
             </Text>
-            <View style={tw`h-[75]`}>
+            <View style={tw`h-[100]`}>
               <FlatList
                 data={options}
-                contentContainerStyle={tw`items-center gap-3`}
+                contentContainerStyle={tw`items-center gap-4 py-2`}
                 showsVerticalScrollIndicator={true}
                 keyExtractor={(item) => item.value}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={tw`p-3 rounded-lg min-w-[90%] min-h-[40px] items-center bg-[${Colors.black1}]`}
+                    style={tw`p-3 rounded-[16px] min-w-[90%] min-h-[60px] items-center justify-center bg-[${Colors.black1}]`}
                     onPress={() => {
                       onSelect?.(item.value);
                       setVisible(false);
@@ -105,7 +105,7 @@ export const PlacePicker = ({
             </View>
             <Image
               source={require("@/assets/images/logo/icon-company.png")}
-              style={tw`w-[60px] h-[80px]`}
+              style={tw`w-[60px] h-[80px] mt-3`}
             />
           </Pressable>
         </Pressable>

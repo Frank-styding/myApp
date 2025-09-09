@@ -6,8 +6,7 @@ export const useConnection = (onDisconnect?: () => void) => {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((netState) => {
-      const connected =
-        !!netState.isConnected && !!netState.isInternetReachable;
+      const connected = !!netState.isConnected;
       setHasConnection(connected);
 
       if (!connected && onDisconnect) {

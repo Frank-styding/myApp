@@ -1,5 +1,6 @@
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Colors, Fonts } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 import { ImageSourcePropType, View, Image, Text } from "react-native";
 import tw from "twrnc";
 export const EndPage = ({
@@ -19,7 +20,7 @@ export const EndPage = ({
       <View style={tw`flex-1 items-center gap-4 justify-center`}>
         <Text
           style={[
-            tw`text-[18px] text-[${Colors.primary}] text-center`,
+            tw`text-[${normalize(18)}px] text-[${Colors.primary}] text-center`,
             { fontFamily: Fonts["Poppins-Bold"] },
           ]}
         >

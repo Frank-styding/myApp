@@ -8,6 +8,7 @@ import { ButtonText } from "../ui/ButtonText";
 import { PlacePicker } from "../ui/PlacePicker";
 import { useSaveData } from "@/hooks/useSaveData";
 import { Colors, STATES } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 
 export const ChangeModal = ({ callback }: { callback?: () => void }) => {
   const { hideModal, modals } = useModalContext();
@@ -43,9 +44,13 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
           />
           <View style={tw`flex-row w-72 justify-between`}>
             <View style={tw`items-start`}>
-              <Text style={tw`text-[18px] text-white`}>Fundo Actual</Text>
+              <Text style={tw`text-[${normalize(18)}px] text-white`}>
+                Fundo Actual
+              </Text>
               <Text
-                style={tw`p-2 w-[35] rounded-[8px] bg-[${Colors.black}] text-[${Colors.light3}] text-[18px]`}
+                style={tw`p-2 w-[35] rounded-[8px] bg-[${Colors.black}] text-[${
+                  Colors.light3
+                }] text-[${normalize(18)}px]`}
               >{`Fundo N°${data.place}`}</Text>
             </View>
             <View>
@@ -53,7 +58,9 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
               <PlacePicker
                 placeholder="N° de fundo"
                 style={tw`w-[35] bg-[${Colors.black}]`}
-                textStyle={tw`text-[${Colors.light3}] text-[18px]`}
+                textStyle={tw`text-[${Colors.light3}] text-[${normalize(
+                  18
+                )}px]`}
                 options={config.select_options}
                 value={option ? `Fundo N°${option}` : undefined}
                 onSelect={setOption}

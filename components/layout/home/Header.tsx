@@ -23,43 +23,45 @@ export function Header({
   return (
     <View
       style={[
-        tw`flex-4 justify-between flex-row items-end px-8 content-center`,
+        tw`flex-4 justify-center flex-row items-end`,
         tw`${containerStyle as ""}`,
       ]}
     >
-      <UserInfo
-        name={name}
-        place={place}
-        textStyle={textStyle}
-        textStyle1={textStyle1}
-      />
+      <View style={tw`flex-row items-end justify-between w-[90%]`}>
+        <UserInfo
+          name={name}
+          place={place}
+          textStyle={textStyle}
+          textStyle1={textStyle1}
+        />
 
-      <View
-        style={tw`w-[70px] h-[70px] rounded-full overflow-hidden items-center justify-center `}
-      >
-        {image ? (
-          <>
+        <View
+          style={tw`w-[70px] h-[70px] rounded-full overflow-hidden items-center justify-center `}
+        >
+          {image ? (
+            <>
+              <Image
+                source={{ uri: image }}
+                style={tw`w-[62px] h-[62px] rounded-full`}
+                onLoadStart={() => {
+                  if (!image) {
+                    setLoading(true);
+                  }
+                }}
+                onLoadEnd={() => {
+                  if (!image) {
+                    setLoading(false);
+                  }
+                }}
+              />
+            </>
+          ) : (
             <Image
-              source={{ uri: image }}
+              source={require("@/assets/images/icons/account_icon.png")}
               style={tw`w-[62px] h-[62px] rounded-full`}
-              onLoadStart={() => {
-                if (!image) {
-                  setLoading(true);
-                }
-              }}
-              onLoadEnd={() => {
-                if (!image) {
-                  setLoading(false);
-                }
-              }}
             />
-          </>
-        ) : (
-          <Image
-            source={require("@/assets/images/icons/account_icon.png")}
-            style={tw`w-[62px] h-[62px] rounded-full`}
-          />
-        )}
+          )}
+        </View>
       </View>
     </View>
   );

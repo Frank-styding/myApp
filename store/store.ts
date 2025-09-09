@@ -60,12 +60,12 @@ const defaultConfig: IConfig = {
   ],
 
   select_options: [
-    { label: "N°1", value: "1" },
-    { label: "N°2", value: "2" },
-    { label: "N°3", value: "3" },
-    { label: "N°4", value: "4" },
-    { label: "N°5", value: "5" },
-    { label: "N°6", value: "6" },
+    { label: "Santo Domingo", value: "Santo_Domingo" },
+    { label: "Agromorin", value: "Agromorin" },
+    { label: "Casaverde", value: "Casaverde" },
+    { label: "Compositan", value: "Compositan" },
+    { label: "Victoria", value: "Victoria" },
+    { label: "El Palmar", value: "El_Palmar" },
   ],
   messages: {
     almuerzo: {

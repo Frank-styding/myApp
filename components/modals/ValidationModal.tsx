@@ -2,6 +2,7 @@ import { useModalContext } from "@/hooks/ModalProvider";
 import { Image, Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
+import { normalize } from "@/lib/normalize";
 
 export const ValidationModal = ({ disabledTap }: { disabledTap?: boolean }) => {
   const { modals, hideModal } = useModalContext();
@@ -24,10 +25,18 @@ export const ValidationModal = ({ disabledTap }: { disabledTap?: boolean }) => {
             source={require("@/assets/images/logo/logo.png")}
             style={tw`w-[140px] h-[80px] mb-4`}
           />
-          <Text style={tw`text-white text-[18px] text-center font-bold`}>
+          <Text
+            style={tw`text-white text-[${normalize(
+              18
+            )}px] text-center font-bold`}
+          >
             Mensage
           </Text>
-          <Text style={tw`text-[#E0E0E0FF] text-[16px] text-center w-70`}>
+          <Text
+            style={tw`text-[#E0E0E0FF] text-[${normalize(
+              16
+            )}px] text-center w-70`}
+          >
             {message}
           </Text>
 

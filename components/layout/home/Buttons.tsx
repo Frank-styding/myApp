@@ -1,5 +1,6 @@
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Colors, Fonts } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 import { Text, TouchableOpacity, View } from "react-native";
 import tw from "twrnc";
 
@@ -17,18 +18,18 @@ export function Buttons({
       <View style={tw`flex-3  items-center justify-center`}>
         <ButtonText
           text="¡Comencemos a cosechar!"
-          style={tw`w-95 items-center p-0 h-[88px] justify-center ${
+          style={tw`w-[93%] items-center p-0 h-[88px] justify-center ${
             active ? `bg-[${Colors.light3}]` : ""
           }`}
           disabled={active}
           onPress={() => onClick?.("button_1")}
         />
       </View>
-      <Text style={tw`text-white pl-5 py-1  text-[18px] `}>
+      <Text style={tw`text-white pl-5 py-1  text-[${normalize(18)}px] `}>
         Tiempos de espera
       </Text>
       <View style={tw`flex-9  pt-2 items-center`}>
-        <View style={tw`flex-wrap flex-row gap-[15px] max-w-[370px]`}>
+        <View style={tw`flex-wrap flex-row gap-[15px] max-w-[93%]`}>
           {options.map(({ label, value }) => (
             <TouchableOpacity
               style={[
@@ -51,7 +52,7 @@ export function Buttons({
             >
               <Text
                 style={[
-                  tw`text-white text-[16px] `,
+                  tw`text-white text-[${normalize(16)}px] `,
                   { fontFamily: Fonts["Lato-Bold"] },
                 ]}
               >
@@ -65,7 +66,7 @@ export function Buttons({
         <ButtonText
           disabled={!active}
           text="¡Finalizar la cosecha!"
-          style={tw`w-95 items-center p-0 h-[88px] justify-center ${
+          style={tw`w-[93%] items-center p-0 h-[88px] justify-center ${
             !active ? `bg-[${Colors.light3}]` : ""
           }`}
           onPress={() => onClick?.("button_2")}

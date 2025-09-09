@@ -4,6 +4,7 @@ import { Image, Modal, Text, View } from "react-native";
 import tw from "twrnc";
 import { ButtonText } from "../ui/ButtonText";
 import { Fonts } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 
 export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
   const { modals, hideModal } = useModalContext();
@@ -19,12 +20,16 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             source={require("@/assets/images/logo/logo.png")}
             style={tw`w-[140px] h-[80px] mb-4`}
           />
-          <Text style={tw`text-white text-[18px] text-center font-bold`}>
+          <Text
+            style={tw`text-white text-[${normalize(
+              18
+            )}px] text-center font-bold`}
+          >
             {title}
           </Text>
           <Text
             style={[
-              tw`text-[#E0E0E0FF] text-[17px] text-center w-70`,
+              tw`text-[#E0E0E0FF] text-[${normalize(17)}px] text-center w-70`,
               { fontFamily: Fonts["Lato-Bold"] },
             ]}
           >

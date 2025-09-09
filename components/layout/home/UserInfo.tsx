@@ -1,3 +1,4 @@
+import { normalize } from "@/lib/normalize";
 import { Text, View } from "react-native";
 import tw from "twrnc";
 
@@ -14,11 +15,19 @@ const InfoItem = ({
 }) => {
   return (
     <View style={tw`flex-row gap-2 `}>
-      <Text style={[tw`text-[17px] text-[#CACACA]`, tw`${textStyle as ""}`]}>
+      <Text
+        style={[
+          tw`text-[${normalize(17)}px] text-[#CACACA]`,
+          tw`${textStyle as ""}`,
+        ]}
+      >
         {name}
       </Text>
       <Text
-        style={[tw`text-[17px] text-white font-bold`, tw`${textStyle1 as ""}`]}
+        style={[
+          tw`text-[${normalize(17)}px] text-white font-bold`,
+          tw`${textStyle1 as ""}`,
+        ]}
       >
         {value}
       </Text>
@@ -45,7 +54,7 @@ export function UserInfo({
         textStyle1={textStyle1}
       />
       <InfoItem
-        value={`N° ${place}`}
+        value={`${place}`}
         name="Fundo"
         textStyle={textStyle}
         textStyle1={textStyle1}

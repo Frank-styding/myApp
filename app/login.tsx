@@ -21,8 +21,8 @@ import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { useConnection } from "@/hooks/useConnection";
 import { LoadingModal } from "@/components/modals/LoadingModal";
 import { ValidationModal } from "@/components/modals/ValidationModal";
-import { isPastEndTime } from "@/lib/isPastSixThirty";
 import { useConfigUpdater } from "@/hooks/useConfigUpdater";
+import { normalize } from "@/lib/normalize";
 
 export default function Login() {
   const { hasConnection } = useConnection();
@@ -40,7 +40,6 @@ export default function Login() {
     startSession,
     isWorking,
     checkSession,
-    endSession,
   } = useAppState();
 
   const [data, setData] = useState<{
@@ -86,31 +85,6 @@ export default function Login() {
 
   useConfigUpdater(hasConnection);
 
-  /*   useEffect(() => {
-    const updateConfigIfNeeded = async () => {
-      if (!hasConnection) return;
-      const { lastConfigUpdate, setLastConfigUpdate } = useAppState.getState();
-      const now = Date.now();
-      if (!lastConfigUpdate || now - lastConfigUpdate > RESET_TIME_CONFIG) {
-        showModal("loading", "Actualizando Datos");
-        try {
-          const { config } = await getAppConfig();
-          if (config) {
-            useAppState.getState().setConfig(config);
-            setLastConfigUpdate(now);
-          }
-        } catch (error) {
-          console.error("Error cargando configuración:", error);
-        } finally {
-          hideModal("loading");
-        }
-      }
-    };
-    updateConfigIfNeeded();
-    const interval = setInterval(updateConfigIfNeeded, RESET_TIME_CONFIG);
-    return () => clearInterval(interval);
-  }, []); */
-
   useEffect(() => {
     const init = async () => {
       if (
@@ -121,7 +95,6 @@ export default function Login() {
         isWorking
       ) {
         goToHome();
-        //router.replace("/home");
         return;
       }
 
@@ -173,40 +146,9 @@ export default function Login() {
       }
       return;
     }
-
-    /*  if (userId !== dataState.dni) {
-      showModal(
-        "validation",
-        "Si cambia los datos se cerrar sesión",
-        (confirm) => {
-          if (confirm) {
-            endSession();
-            setData({ ...data, dni: userId });
-          } else {
-            setData({ ...dataState });
-          }
-        }
-      );
-    } */
   };
 
   const onChangePassword = (password: string) => {
-    /*    if (password !== dataState.password && checkSession()) {
-      showModal(
-        "validation",
-        "Si cambia los datos se cerrar sesión",
-        (confirm) => {
-          if (confirm) {
-            endSession();
-            setData({ ...data, password });
-          } else {
-            setData({ ...dataState });
-          }
-        }
-      );
-      return;
-    } */
-
     setData({ ...data, password });
   };
 
@@ -232,22 +174,23 @@ export default function Login() {
           setDataState(data);
           startSession(SESSION_TIME);
           goToHome();
-          /*   router.replace("/home"); */
         } else {
           showModal("error", "La contraseña es incorrecta");
         }
       });
     } else {
       goToHome();
-      /*  router.replace("/home"); */
+    }
+  };
+
+  const onSelect = (place: string) => {
+    setData({ ...data, place });
+    if (checkSession()) {
+      setDataState({ ...data, place });
     }
   };
 
   const goToHome = () => {
-    /*     if (isPastEndTime()) {
-      showModal("message", "Se termino la jornada");
-      return;
-    } */
     router.replace("/home");
   };
 
@@ -264,14 +207,16 @@ export default function Login() {
           <View style={tw`flex-row gap-2 items-center`}>
             <Text
               style={[
-                tw`text-white text-[18px] `,
+                tw`text-white text-[${normalize(18)}px] `,
                 { fontFamily: Fonts["Lato-Bold"] },
               ]}
             >
               Bienvenido, Capitán
             </Text>
             {name && (
-              <Text style={tw`text-[${Colors.primary}] text-[20px] `}>
+              <Text
+                style={tw`text-[${Colors.primary}] text-[${normalize(20)}px] `}
+              >
                 {name}
               </Text>
             )}
@@ -296,7 +241,7 @@ export default function Login() {
         <View style={tw`gap-3`}>
           <Text
             style={[
-              tw`text-white text-[18px] `,
+              tw`text-white text-[${normalize(18)}px] `,
               { fontFamily: Fonts["Lato-Bold"] },
             ]}
           >
@@ -304,9 +249,9 @@ export default function Login() {
           </Text>
           <PlacePicker
             placeholder="N° de fundo"
-            value={place ? `Fundo N° ${place}` : ""}
+            value={place ? `${place}` : ""}
             options={config.select_options}
-            onSelect={(place) => setData({ ...data, place })}
+            onSelect={onSelect}
           />
         </View>
       </View>

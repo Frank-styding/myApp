@@ -9,6 +9,7 @@ import {
 import tw from "twrnc";
 import { Ionicons } from "@expo/vector-icons"; // expo install @expo/vector-icons
 import { useState } from "react";
+import { normalize } from "@/lib/normalize";
 
 interface InputProps {
   placeholder?: string;
@@ -48,7 +49,7 @@ export const Input = ({
           {
             fontFamily: fontFamily || Fonts["Poppins-Bold"],
           },
-          tw`flex-1 text-[16px] text-[${Colors.black}] font-bold`,
+          tw`flex-1 text-[${normalize(16)}px] text-[${Colors.black}] font-bold`,
           style,
         ]}
         keyboardType={keyboardType}

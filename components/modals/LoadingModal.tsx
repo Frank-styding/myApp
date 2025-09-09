@@ -2,6 +2,7 @@ import { useModalContext } from "@/hooks/ModalProvider";
 import { ActivityIndicator, Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
 import { Colors } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 
 export const LoadingModal = () => {
   const { hideModal, modals } = useModalContext();
@@ -17,7 +18,7 @@ export const LoadingModal = () => {
           onPress={(e) => e.stopPropagation()}
         >
           <ActivityIndicator size="large" color={Colors.primary} />
-          <Text style={tw`text-white text-[18px] text-center`}>
+          <Text style={tw`text-white text-[${normalize(18)}px] text-center`}>
             {modals.loading.message}
           </Text>
         </Pressable>

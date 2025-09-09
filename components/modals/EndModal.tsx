@@ -13,6 +13,7 @@ import {
 import tw from "twrnc";
 //import { Header } from "../layout/home/Header";
 import { useState } from "react";
+import { normalize } from "@/lib/normalize";
 
 export const EndModal = ({
   onClick,
@@ -24,10 +25,9 @@ export const EndModal = ({
   const [reason, setReason] = useState<string>();
 
   const options = [
-    { label: "Falta de materia prima", value: "materiales" },
-    { label: "Una hora extra", value: "una hora extra" },
-    { label: "Dos horas extras", value: "dos hora extra" },
-    { label: "Otros", value: "otros" },
+    { label: "Fin de la Jornada", value: "fin de jornada" },
+    { label: "Tiempo Extra", value: "horas extras" },
+    { label: "Otro", value: "otro" },
   ];
 
   const options1 = [
@@ -82,7 +82,10 @@ export const EndModal = ({
               } pt-10 px-10 ${state !== 2 ? "" : "mb-3"}`}
             >
               <Text
-                style={[tw`text-[18px]`, { fontFamily: Fonts["Poppins-Bold"] }]}
+                style={[
+                  tw`text-[${normalize(18)}px]`,
+                  { fontFamily: Fonts["Poppins-Bold"] },
+                ]}
               >
                 {titles[state]}
               </Text>
@@ -96,7 +99,7 @@ export const EndModal = ({
 
               <Text
                 style={[
-                  tw`text-[17px] font-bold text-center pb-3`,
+                  tw`text-[${normalize(17)}px] font-bold text-center pb-3`,
                   { fontFamily: Fonts["Lato-Bold"] },
                 ]}
               >
@@ -118,7 +121,9 @@ export const EndModal = ({
                     }}
                   >
                     <Text
-                      style={tw`text-[${Colors.light0}] text-[16px] font-bold`}
+                      style={tw`text-[${Colors.light0}] text-[${normalize(
+                        16
+                      )}px] font-bold`}
                     >
                       {item.label}
                     </Text>

@@ -1,4 +1,5 @@
 import { Colors, Fonts } from "@/constants/constants";
+import { normalize } from "@/lib/normalize";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 
@@ -53,7 +54,7 @@ export const PlacePicker = ({
           style={[
             tw`${
               value ? "text-black" : `text-[${Colors.black1}]`
-            } text-[16px] font-bold`,
+            } text-[${normalize(16)}px] font-bold`,
             {
               fontFamily: fontFamily || Fonts["Lato-Bold"],
             },
@@ -76,7 +77,9 @@ export const PlacePicker = ({
             onPress={() => {}}
           >
             <Text
-              style={tw`h-[50px] text-[22px] font-bold text-[${Colors.primary}] mb-6 text-center`}
+              style={tw`h-[50px] text-[${normalize(21)}px] font-bold text-[${
+                Colors.primary
+              }] mb-2 mt-4 text-center`}
             >
               ¡Seleccione su fundo, Capitán!
             </Text>
@@ -95,9 +98,11 @@ export const PlacePicker = ({
                     }}
                   >
                     <Text
-                      style={tw`text-[${Colors.light0}] text-[18px] font-bold`}
+                      style={tw`text-[${Colors.light0}] text-[${normalize(
+                        18
+                      )}px] font-bold`}
                     >
-                      {`Fundo ${item.label}`}
+                      {`${item.label}`}
                     </Text>
                   </TouchableOpacity>
                 )}

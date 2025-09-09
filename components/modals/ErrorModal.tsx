@@ -1,5 +1,6 @@
 // components/modals/ErrorModal.tsx
 import { useModalContext } from "@/hooks/ModalProvider";
+import { normalize } from "@/lib/normalize";
 import { Image, Modal, Pressable, Text } from "react-native";
 import tw from "twrnc";
 
@@ -16,11 +17,15 @@ export const ErrorModal = () => {
           style={tw`bg-[#000000] w-72 rounded-xl w-85 py-7 gap-5 items-center`}
           onPress={(e) => e.stopPropagation()}
         >
-          <Text style={tw`text-white text-[22px] text-center font-bold`}>
+          <Text
+            style={tw`text-white text-[${normalize(
+              22
+            )}px] text-center font-bold`}
+          >
             Error
           </Text>
 
-          <Text style={tw`text-white text-[17px] text-center`}>
+          <Text style={tw`text-white text-[${normalize(17)}px] text-center`}>
             {modals.error.message || ""}
           </Text>
           <Image

@@ -15,7 +15,7 @@ export const getUser = async ({ dni }: { dni: string }) => {
     },
     body: JSON.stringify({
       type: "getUser",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       data: {
         dni,
       },

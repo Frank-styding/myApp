@@ -23,7 +23,7 @@ export const getAppConfig = async () => {
     },
     body: JSON.stringify({
       type: "appConfig",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
     }),
   });
 

@@ -21,7 +21,7 @@ export const loginUser = async ({
     },
     body: JSON.stringify({
       type: "login",
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp: Date.now(),
       data: {
         dni,
         password,

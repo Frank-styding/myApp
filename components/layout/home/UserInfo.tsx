@@ -16,6 +16,7 @@ const InfoItem = ({
   return (
     <View style={tw`flex-row gap-2 `}>
       <Text
+        selectable={false}
         style={[
           tw`text-[${normalize(17)}px] text-[#CACACA]`,
           tw`${textStyle as ""}`,
@@ -24,6 +25,7 @@ const InfoItem = ({
         {name}
       </Text>
       <Text
+        selectable={false}
         style={[
           tw`text-[${normalize(17)}px] text-white font-bold`,
           tw`${textStyle1 as ""}`,

@@ -1,8 +1,10 @@
 import { getCurrentTime } from "@/utils/getCurrentTime";
 import { useBackgroundSync } from "./useBackgroundSync";
+import { useConnection } from "./useConnection";
 
 export const useSaveData = () => {
   const { isRunning, startBackgroundTask, addRequest } = useBackgroundSync();
+  const { hasConnection } = useConnection();
   const saveData = async (
     state: string,
     data: {
@@ -25,7 +27,7 @@ export const useSaveData = () => {
     }).then(() => {
       callback?.();
     });
-    if (!isRunning) {
+    if (!isRunning && hasConnection) {
       await startBackgroundTask();
     }
   };

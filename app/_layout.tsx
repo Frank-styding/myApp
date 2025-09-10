@@ -1,24 +1,29 @@
 import { Colors, fontsMap } from "@/constants/constants";
-import { ModalProvider } from "@/hooks/ModalProvider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Image, SafeAreaView } from "react-native";
 import NetInfo, { NetInfoSubscription } from "@react-native-community/netinfo";
 import tw from "twrnc";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync";
+import { ModalProvider } from "@/hooks/ModalProvider";
 
 export default function Layout() {
   const [fontsLoaded] = useFonts(fontsMap);
   const { isRunning, startBackgroundTask } = useBackgroundSync();
+  const wasConnected = useRef<boolean | null>(null);
 
   useEffect(() => {
     let unsubscribe: NetInfoSubscription;
 
     unsubscribe = NetInfo.addEventListener((state) => {
-      if (state.isConnected && !isRunning) {
+      const isOnline = state.isConnected === true;
+
+      if (isOnline && wasConnected.current === false && !isRunning) {
         startBackgroundTask();
       }
+
+      wasConnected.current = isOnline;
     });
 
     return () => {
@@ -26,7 +31,7 @@ export default function Layout() {
         unsubscribe();
       }
     };
-  }, []);
+  }, [isRunning, startBackgroundTask]);
 
   if (!fontsLoaded) {
     return (

@@ -207,6 +207,7 @@ export default function Login() {
         <View style={tw`gap-3`}>
           <View style={tw`flex-row gap-2 items-center`}>
             <Text
+              selectable={false}
               style={[
                 tw`text-white text-[${normalize(18)}px] `,
                 { fontFamily: Fonts["Lato-Bold"] },
@@ -216,6 +217,7 @@ export default function Login() {
             </Text>
             {name && (
               <Text
+                selectable={false}
                 style={tw`text-[${Colors.primary}] text-[${normalize(20)}px] `}
               >
                 {name}
@@ -241,6 +243,7 @@ export default function Login() {
         </View>
         <View style={tw`gap-3`}>
           <Text
+            selectable={false}
             style={[
               tw`text-white text-[${normalize(18)}px] `,
               { fontFamily: Fonts["Lato-Bold"] },

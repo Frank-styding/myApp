@@ -26,6 +26,7 @@ export const ValidationModal = ({ disabledTap }: { disabledTap?: boolean }) => {
             style={tw`w-[140px] h-[80px] mb-4`}
           />
           <Text
+            selectable={false}
             style={tw`text-white text-[${normalize(
               18
             )}px] text-center font-bold`}
@@ -33,6 +34,7 @@ export const ValidationModal = ({ disabledTap }: { disabledTap?: boolean }) => {
             Mensage
           </Text>
           <Text
+            selectable={false}
             style={tw`text-[#E0E0E0FF] text-[${normalize(
               16
             )}px] text-center w-70`}

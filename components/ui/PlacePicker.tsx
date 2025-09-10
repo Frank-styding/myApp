@@ -51,6 +51,7 @@ export const PlacePicker = ({
         ]}
       >
         <Text
+          selectable={false}
           style={[
             tw`${
               value ? "text-black" : `text-[${Colors.black1}]`
@@ -77,6 +78,7 @@ export const PlacePicker = ({
             onPress={() => {}}
           >
             <Text
+              selectable={false}
               style={tw`h-[50px] text-[${normalize(21)}px] font-bold text-[${
                 Colors.primary
               }] mb-2 mt-4 text-center`}
@@ -98,6 +100,7 @@ export const PlacePicker = ({
                     }}
                   >
                     <Text
+                      selectable={false}
                       style={tw`text-[${Colors.light0}] text-[${normalize(
                         18
                       )}px] font-bold`}

@@ -7,8 +7,9 @@ export const useConnection = (onDisconnect?: () => void) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((netState) => {
       const connected = !!netState.isConnected;
-      setHasConnection(connected);
-
+      if (connected != hasConnection) {
+        setHasConnection(connected);
+      }
       if (!connected && onDisconnect) {
         onDisconnect(); // 👈 dispara callback cuando no hay internet
       }

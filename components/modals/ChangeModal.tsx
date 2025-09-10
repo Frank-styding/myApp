@@ -1,5 +1,4 @@
 // components/modals/ChangeModal.tsx
-import { useModalContext } from "@/hooks/ModalProvider";
 import { useAppState } from "@/store/store";
 import { useState } from "react";
 import { Image, Modal, Pressable, Text, View } from "react-native";
@@ -9,6 +8,7 @@ import { PlacePicker } from "../ui/PlacePicker";
 import { useSaveData } from "@/hooks/useSaveData";
 import { Colors, STATES } from "@/constants/constants";
 import { normalize } from "@/lib/normalize";
+import { useModalContext } from "@/hooks/ModalProvider";
 
 export const ChangeModal = ({ callback }: { callback?: () => void }) => {
   const { hideModal, modals } = useModalContext();
@@ -44,17 +44,23 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
           />
           <View style={tw`flex-row w-72 justify-between`}>
             <View style={tw`items-start`}>
-              <Text style={tw`text-[${normalize(18)}px] text-white`}>
+              <Text
+                selectable={false}
+                style={tw`text-[${normalize(18)}px] text-white`}
+              >
                 Fundo Actual
               </Text>
               <Text
+                selectable={false}
                 style={tw`p-2 w-[35] rounded-[8px] bg-[${Colors.black}] text-[${
                   Colors.light3
                 }] text-[${normalize(18)}px]`}
               >{`Fundo N°${data.place}`}</Text>
             </View>
             <View>
-              <Text style={tw`text-[18px] text-white`}>Nuevo Fundo</Text>
+              <Text selectable={false} style={tw`text-[18px] text-white`}>
+                Nuevo Fundo
+              </Text>
               <PlacePicker
                 placeholder="N° de fundo"
                 style={tw`w-[35] bg-[${Colors.black}]`}

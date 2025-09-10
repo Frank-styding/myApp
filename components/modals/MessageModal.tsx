@@ -24,7 +24,10 @@ export const MessageModal = () => {
           >
             Mensage
           </Text>
-          <Text style={tw`text-white text-[${normalize(17)}px] text-center`}>
+          <Text
+            selectable={false}
+            style={tw`text-white text-[${normalize(17)}px] text-center`}
+          >
             {message || ""}
           </Text>
         </Pressable>

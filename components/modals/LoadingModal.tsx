@@ -30,7 +30,10 @@ export const LoadingModal = () => {
           /> */}
           <SvgSpinner size={80} color={Colors.primary} />
 
-          <Text style={tw`text-white text-[${normalize(18)}px] text-center`}>
+          <Text
+            selectable={false}
+            style={tw`text-white text-[${normalize(18)}px] text-center`}
+          >
             {modals.loading.message}
           </Text>
         </Pressable>

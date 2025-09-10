@@ -26,7 +26,10 @@ export function Buttons({
           onPress={() => onClick?.("button_1")}
         />
       </View>
-      <Text style={tw`text-white pl-5 py-1  text-[${normalize(18)}px] `}>
+      <Text
+        selectable={false}
+        style={tw`text-white pl-5 py-1  text-[${normalize(18)}px] `}
+      >
         Tiempos de espera
       </Text>
       <View style={tw`flex-9  pt-2 items-center`}>
@@ -54,6 +57,7 @@ export function Buttons({
               key={label}
             >
               <Text
+                selectable={false}
                 style={[
                   tw`text-white text-[${normalize(16)}px] `,
                   { fontFamily: Fonts["Lato-Bold"] },

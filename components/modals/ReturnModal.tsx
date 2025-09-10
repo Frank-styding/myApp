@@ -21,6 +21,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             style={tw`w-[140px] h-[80px] mb-4`}
           />
           <Text
+            selectable={false}
             style={tw`text-white text-[${normalize(
               18
             )}px] text-center font-bold`}
@@ -28,6 +29,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
             {title}
           </Text>
           <Text
+            selectable={false}
             style={[
               tw`text-[#E0E0E0FF] text-[${normalize(17)}px] text-center w-70`,
               { fontFamily: Fonts["Lato-Bold"] },

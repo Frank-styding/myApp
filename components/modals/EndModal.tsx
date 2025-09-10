@@ -1,6 +1,5 @@
 // components/modals/ErrorModal.tsx
 import { Colors, Fonts } from "@/constants/constants";
-import { useModalContext } from "@/hooks/ModalProvider";
 //import { useAppState } from "@/store/store";
 import {
   FlatList,
@@ -15,6 +14,7 @@ import tw from "twrnc";
 //import { Header } from "../layout/home/Header";
 import { useState } from "react";
 import { normalize } from "@/lib/normalize";
+import { useModalContext } from "@/hooks/ModalProvider";
 
 const { height } = Dimensions.get("screen");
 export const EndModal = ({
@@ -84,6 +84,7 @@ export const EndModal = ({
               } pt-10 px-3 ${state !== 2 ? "" : "mb-0"}`}
             >
               <Text
+                selectable={false}
                 style={[
                   tw`text-[${normalize(18)}px]`,
                   { fontFamily: Fonts["Poppins-Bold"] },
@@ -100,6 +101,7 @@ export const EndModal = ({
               )}
 
               <Text
+                selectable={false}
                 style={[
                   tw`text-[${normalize(17)}px] font-bold text-center pb-3`,
                   { fontFamily: Fonts["Lato-Bold"] },
@@ -125,6 +127,7 @@ export const EndModal = ({
                     }}
                   >
                     <Text
+                      selectable={false}
                       style={tw`text-[${Colors.light0}] text-[${normalize(
                         16
                       )}px] font-bold`}

@@ -18,6 +18,7 @@ export const ErrorModal = () => {
           onPress={(e) => e.stopPropagation()}
         >
           <Text
+            selectable={false}
             style={tw`text-white text-[${normalize(
               22
             )}px] text-center font-bold`}
@@ -25,7 +26,10 @@ export const ErrorModal = () => {
             Error
           </Text>
 
-          <Text style={tw`text-white text-[${normalize(17)}px] text-center`}>
+          <Text
+            selectable={false}
+            style={tw`text-white text-[${normalize(17)}px] text-center`}
+          >
             {modals.error.message || ""}
           </Text>
           <Image

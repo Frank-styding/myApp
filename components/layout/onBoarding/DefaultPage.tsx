@@ -29,6 +29,7 @@ export const DefaultPage = ({
       </View>
       <View style={tw`flex-1 items-center gap-4 justify-center px-3`}>
         <Text
+          selectable={false}
           style={[
             tw`text-[${normalize(18)}px] text-[${Colors.primary}] text-center`,
             { fontFamily: Fonts["Poppins-Bold"] },
@@ -37,6 +38,7 @@ export const DefaultPage = ({
           {title}
         </Text>
         <Text
+          selectable={false}
           style={[
             tw`text-[${normalize(17)}px] text-[${Colors.light0}] text-center`,
             ,

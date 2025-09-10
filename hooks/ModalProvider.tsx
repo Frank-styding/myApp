@@ -1,10 +1,10 @@
 // providers/ModalProvider.tsx
 import React, { createContext, useContext, ReactNode } from "react";
-import { useModal } from "@/hooks/useModal";
+import { ModalStore, useModal } from "@/hooks/useModal";
 
-interface ModalContextType extends ReturnType<typeof useModal> {}
+//interface ModalContextType extends ReturnType<ModalStore> {}
 
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
+const ModalContext = createContext<ModalStore | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
   const modalControls = useModal();

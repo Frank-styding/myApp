@@ -38,6 +38,7 @@ export const ButtonText = ({
       onPress={onPress}
     >
       <Text
+        selectable={false}
         style={[
           tw`text-[${normalize(18)}px] font-bold text-[${
             disabled ? Colors.light0 : Colors.black

@@ -1,8 +1,8 @@
 import { getAppConfig } from "@/lib/getAppConfig";
 import { useAppState } from "@/store/store";
 import { useEffect } from "react";
-import { useModalContext } from "./ModalProvider";
 import { useConfigStore } from "@/store/useConfigStore";
+import { useModalContext } from "./ModalProvider";
 
 export function useConfigUpdater(hasConnection: boolean) {
   const { showModal, hideModal } = useModalContext();

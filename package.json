@@ -46,7 +46,8 @@
     "tailwindcss": "^3.4.17",
     "twrnc": "^4.9.1",
     "zustand": "^5.0.8",
-    "expo-crypto": "~14.1.5"
+    "expo-crypto": "~14.1.5",
+    "react-native-svg": "15.11.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

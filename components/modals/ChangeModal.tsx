@@ -35,7 +35,7 @@ export const ChangeModal = ({ callback }: { callback?: () => void }) => {
         style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}
       >
         <Pressable
-          style={tw`bg-[${Colors.black2}] w-72 rounded-xl w-85 py-7 gap-5 items-center`}
+          style={tw`bg-[${Colors.black2}] w-[70%] rounded-xl w-85 py-7 gap-5 items-center`}
           onPress={(e) => e.stopPropagation()}
         >
           <Image

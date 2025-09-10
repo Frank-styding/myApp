@@ -9,12 +9,14 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Dimensions,
 } from "react-native";
 import tw from "twrnc";
 //import { Header } from "../layout/home/Header";
 import { useState } from "react";
 import { normalize } from "@/lib/normalize";
 
+const { height } = Dimensions.get("screen");
 export const EndModal = ({
   onClick,
 }: {
@@ -73,13 +75,13 @@ export const EndModal = ({
     <Modal transparent visible={modals.end.visible} animationType="fade">
       <View style={tw`flex-1 justify-end pb-7 items-center z-50`}>
         <View
-          style={tw`bg-[${Colors.primary}] w-[94%] h-[690px] rounded-xl gap-5 items-center`}
+          style={tw`bg-[${Colors.primary}] w-[93%] h-[83%] rounded-xl  items-center`}
         >
-          <View style={tw`flex-30`}>
+          <View style={tw`flex-1`}>
             <View
               style={tw`items-center  ${
-                state !== 2 ? "gap-8" : "gap-0"
-              } pt-10 px-10 ${state !== 2 ? "" : "mb-3"}`}
+                state !== 2 ? "gap-6" : "gap-0"
+              } pt-10 px-3 ${state !== 2 ? "" : "mb-0"}`}
             >
               <Text
                 style={[
@@ -93,7 +95,7 @@ export const EndModal = ({
               {state === 2 && (
                 <Image
                   source={require("@/assets/images/onboarding/image4.png")}
-                  style={tw`h-[320px]`}
+                  style={tw`h-[${height * 0.3}px] w-[${height * 0.4}px]`}
                 />
               )}
 
@@ -110,11 +112,13 @@ export const EndModal = ({
             <View style={tw`mt-3 ${state != 2 ? "flex-12" : "flex-4"}`}>
               <FlatList
                 data={state === 0 ? options1 : state === 1 ? options : options2}
-                contentContainerStyle={tw`items-center gap-6 py-2`}
+                contentContainerStyle={tw`items-center gap-2 py-2`}
                 keyExtractor={(item) => item.label}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={tw`p-3 rounded-[16px] min-w-[285px] min-h-[80px] items-center justify-center bg-[${Colors.black}]`}
+                    style={tw`p-3 rounded-[16px] min-w-[285px] min-h-[${
+                      height * 0.09
+                    }px] items-center justify-center bg-[${Colors.black}]`}
                     onPress={() => {
                       handleClick(item.value);
                       /*  onClick?.(item.value); */

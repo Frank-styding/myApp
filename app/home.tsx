@@ -117,7 +117,7 @@ export default function Home() {
     hideModal("end");
   };
   return (
-    <SafeAreaView style={tw`flex-1 pb-20`}>
+    <SafeAreaView style={tw`flex-1`}>
       <Header
         name={data.name as string}
         place={data.place as string}

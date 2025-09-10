@@ -22,6 +22,14 @@ export function OnBoarding({
   return (
     <View style={tw`flex-1`}>
       <Animated.Image
+        source={require("@/assets/images/logo/icon-company-name.png")}
+        style={[tw`w-[115px] h-[110px]  absolute`, animatedLogoTitleStyle]}
+      />
+      <Animated.Image
+        source={require("@/assets/images/logo/icon-company.png")}
+        style={[animatedLogoStyle, tw`absolute `]}
+      />
+      <Animated.Image
         source={require("@/assets/images/logo/logo2.png")}
         style={[
           animatedLogo2Style,
@@ -29,7 +37,10 @@ export function OnBoarding({
           { zIndex: 1 },
         ]}
       />
-      <Animated.View style={[tw`flex-1 `, animatedViewStyle, { zIndex: 2 }]}>
+
+      <Animated.View
+        style={[tw`flex-1 w-full overflow-hidden`, animatedViewStyle]}
+      >
         <Gallery
           active={active}
           pages={[
@@ -57,15 +68,6 @@ Registra fácilmente las horas de tu equipo.
           ]}
         />
       </Animated.View>
-
-      <Animated.Image
-        source={require("@/assets/images/logo/icon-company-name.png")}
-        style={[tw`w-[115px] h-[110px]  absolute`, animatedLogoTitleStyle]}
-      />
-      <Animated.Image
-        source={require("@/assets/images/logo/icon-company.png")}
-        style={[animatedLogoStyle]}
-      />
     </View>
   );
 }

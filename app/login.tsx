@@ -15,7 +15,7 @@ import { loginUser } from "@/lib/loginUser";
 import { useAppState } from "@/store/store";
 import { useRouter } from "expo-router";
 import { useState, useEffect, useRef } from "react";
-import { View, Image, Text, Alert } from "react-native";
+import { View, Image, Text, Alert, Dimensions } from "react-native";
 import tw from "twrnc";
 import { useBackgroundSync } from "@/hooks/useBackgroundSync";
 import { useConnection } from "@/hooks/useConnection";
@@ -23,6 +23,8 @@ import { LoadingModal } from "@/components/modals/LoadingModal";
 import { ValidationModal } from "@/components/modals/ValidationModal";
 import { useConfigUpdater } from "@/hooks/useConfigUpdater";
 import { normalize } from "@/lib/normalize";
+
+const { width } = Dimensions.get("window");
 
 export default function Login() {
   const { hasConnection } = useConnection();
@@ -144,7 +146,6 @@ export default function Login() {
       } finally {
         hideModal("loading");
       }
-      return;
     }
   };
 
@@ -195,14 +196,14 @@ export default function Login() {
   };
 
   return (
-    <View style={tw`flex-1 pb-18`}>
+    <View style={tw`flex-1 `}>
       <View style={tw`flex-6 items-center justify-center`}>
         <Image
           source={require("../assets/images/logo/logo.png")}
-          style={{ height: 195, width: 299 }}
+          style={{ height: (195 * width) / 360, width: (299 * width) / 360 }}
         />
       </View>
-      <View style={tw`flex-3 px-3 gap-4`}>
+      <View style={tw`flex-3 px-3 gap-4 `}>
         <View style={tw`gap-3`}>
           <View style={tw`flex-row gap-2 items-center`}>
             <Text
@@ -265,7 +266,7 @@ export default function Login() {
       </View>
       <Image
         source={require("@/assets/images/logo/logo2.png")}
-        style={tw`absolute w-[51px] h-[31px] bottom-[80px] left-[50%] translate-x-[-25.5px] `}
+        style={tw`mt-2 w-[51px] h-[31px] bottom-[40px] left-[50%] translate-x-[-25.5px] `}
       />
       <ErrorModal />
       <LoadingModal />

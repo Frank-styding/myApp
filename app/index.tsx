@@ -55,7 +55,7 @@ export default function Index() {
   }
 
   return (
-    <SafeAreaView style={tw`flex-1 justify-center items-center gap-3`}>
+    <SafeAreaView style={tw`flex-1`}>
       <OnBoarding onFinishOnboarding={handleFinishOnboarding} />
     </SafeAreaView>
   );

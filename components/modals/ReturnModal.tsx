@@ -14,7 +14,7 @@ export const ReturnModal = ({ onClick }: { onClick?: () => void }) => {
     <Modal transparent visible={visible} animationType="fade">
       <View style={tw`flex-1 bg-[rgba(0,0,0,0.6)] justify-center items-center`}>
         <View
-          style={tw`bg-[#2d2d35] w-72 rounded-xl w-85 py-7 gap-3 items-center`}
+          style={tw`bg-[#2d2d35] w-72 rounded-xl w-[88%] py-7 gap-3 items-center`}
         >
           <Image
             source={require("@/assets/images/logo/logo.png")}

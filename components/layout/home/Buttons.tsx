@@ -1,9 +1,10 @@
 import { ButtonText } from "@/components/ui/ButtonText";
 import { Colors, Fonts } from "@/constants/constants";
 import { normalize } from "@/lib/normalize";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import tw from "twrnc";
 
+const { width, height } = Dimensions.get("screen");
 export function Buttons({
   options,
   onClick,
@@ -14,13 +15,13 @@ export function Buttons({
   active?: boolean;
 }) {
   return (
-    <View style={tw`flex-21 mt-3`}>
+    <View style={tw`flex-20 mt-3`}>
       <View style={tw`flex-3  items-center justify-center`}>
         <ButtonText
           text="¡Comencemos a cosechar!"
-          style={tw`w-[93%] items-center p-0 h-[88px] justify-center ${
-            active ? `bg-[${Colors.light3}]` : ""
-          }`}
+          style={tw`w-[93%] items-center p-0 h-[${
+            height * 0.11
+          }px] justify-center ${active ? `bg-[${Colors.light3}]` : ""}`}
           disabled={active}
           onPress={() => onClick?.("button_1")}
         />
@@ -33,7 +34,9 @@ export function Buttons({
           {options.map(({ label, value }) => (
             <TouchableOpacity
               style={[
-                tw`w-[177px] h-[80px] rounded-[16px] items-start justify-center p-3 pl-4 pr-10`,
+                tw`w-[${width * 0.44}px] h-[${
+                  height * 0.097
+                }px] rounded-[16px] items-start justify-center p-3 pl-4 pr-10`,
                 active
                   ? {
                       backgroundColor: Colors.black,
@@ -66,9 +69,9 @@ export function Buttons({
         <ButtonText
           disabled={!active}
           text="¡Finalizar la cosecha!"
-          style={tw`w-[93%] items-center p-0 h-[88px] justify-center ${
-            !active ? `bg-[${Colors.light3}]` : ""
-          }`}
+          style={tw`w-[93%] items-center p-0 h-[${
+            height * 0.11
+          }px] justify-center ${!active ? `bg-[${Colors.light3}]` : ""}`}
           onPress={() => onClick?.("button_2")}
         />
       </View>

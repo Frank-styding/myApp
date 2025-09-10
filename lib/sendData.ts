@@ -75,7 +75,7 @@ export const sendData = async ({
       },
       body: JSON.stringify({
         type: "insert:format_1",
-        timestamp: Math.floor(Date.now() / 1000),
+        timestamp: Date.now(),
         id,
         data: {
           spreadsheetName: "cosecha_" + getFormattedDate(),

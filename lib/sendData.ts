@@ -36,7 +36,7 @@ export const sendData = async ({
 
   const interval = 800;
   const maxRetries = 20;
- /*  const id = uuidv4(); */
+  /*  const id = uuidv4(); */
   const timestamp = Date.now();
 
   for (let i = 0; i < maxRetries; i++) {

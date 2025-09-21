@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, View, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
   cancelAnimation,
@@ -101,11 +101,22 @@ export const Gallery = ({
     opacity: opacity.value,
   }));
 
+  // Función para cambiar de página al presionar la pantalla
+  const handlePress = () => {
+    setPage((prev) => {
+      const next = prev + 1;
+      return next >= pages.length ? prev : next;
+    });
+    opacity.value = withTiming(1, { duration: 300 });
+  };
+
   return (
     <View style={tw`flex-1 gap-6`}>
-      <Animated.View style={[{ flex: 9 }, animatedStyle]}>
-        {pages[page]}
-      </Animated.View>
+      <Pressable style={{ flex: 9 }} onPress={handlePress}>
+        <Animated.View style={[{ flex: 1 }, animatedStyle]}>
+          {pages[page]}
+        </Animated.View>
+      </Pressable>
 
       <View
         style={{

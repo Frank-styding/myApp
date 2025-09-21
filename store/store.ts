@@ -31,6 +31,8 @@ interface AppState {
   hasLoadedConfig: false;
 
   isWorking: boolean;
+  endReason: null | string;
+  endModalState: number;
 
   hasSession: boolean;
   sessionStart?: number;
@@ -45,6 +47,8 @@ interface AppState {
   endSession: () => void;
   checkSession: () => boolean;
   setIsWorking: (value: boolean) => void;
+  setEndModalState: (value: number) => void;
+  setEndReason: (value: string | null) => void;
 }
 
 // Default configuration values
@@ -111,6 +115,15 @@ export const useAppState = create<AppState>()(
       sessionStart: undefined,
       sessionDuration: 0,
       hasLoadedConfig: false,
+      endModalState: 0,
+      endReason: null as null | string,
+
+      setEndReason: (value) => {
+        set(() => ({ endReason: value }));
+      },
+      setEndModalState: (value) => {
+        set(() => ({ endModalState: value }));
+      },
 
       // Update working status
       setIsWorking: (value) => {

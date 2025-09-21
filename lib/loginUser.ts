@@ -39,5 +39,9 @@ export const loginUser = async ({
     };
   }
 
-  return { ok: false };
+  return {
+    ok: false,
+    correct: false,
+    alreadyLogged: false,
+  };
 };

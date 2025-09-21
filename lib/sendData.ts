@@ -1,6 +1,7 @@
 import { getFormattedDate } from "@/utils/getFormattedDate";
 import NetInfo from "@react-native-community/netinfo";
 import Constants from "expo-constants";
+//import uuid from "react-native-uuid"; // Instala uuid si no lo tienes
 
 export const sendData = async ({
   place,
@@ -22,8 +23,6 @@ export const sendData = async ({
   }[];
 }): Promise<{ ok: boolean; status?: number; body?: any }> => {
   const apiUrl = Constants.expoConfig?.extra?.API_URL;
-  console.log(apiUrl);
-
   if (!apiUrl) {
     console.warn("sendData: apiUrl no configurada");
     return { ok: false };
@@ -35,47 +34,16 @@ export const sendData = async ({
     return { ok: false };
   }
 
-  const waitUntilReady = async (
-    maxRetries = 3,
-    interval = 500
-  ): Promise<boolean> => {
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        const resp = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ type: "isReady" }),
-        });
+  const interval = 800;
+  const maxRetries = 20;
+ /*  const id = uuidv4(); */
+  const timestamp = Date.now();
 
-        const json = await resp.json();
-        if (json.isReady) {
-          return true;
-        }
-      } catch (err) {
-        console.warn("sendData: error consultando isReady", err);
-      }
-      await new Promise((res) => setTimeout(res, interval));
-    }
-    return false;
-  };
-
-  try {
-    console.log("check if is ready");
-    const ready = await waitUntilReady();
-    if (!ready) {
-      console.error("sendData: API no está lista después de varios intentos");
-      return { ok: false };
-    }
-    console.log("sending data");
-    const resp = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const payload = {
         type: "insert:format_1",
-        timestamp: Date.now(),
+        timestamp,
         id,
         data: {
           spreadsheetName: "cosecha_" + getFormattedDate(),
@@ -84,7 +52,7 @@ export const sendData = async ({
             tableName: dni,
             tableData: {
               dni: dni,
-              capitan: name,
+              capitan: name, // corregido a "capitan" como en Python
             },
             items: data.map((item) => ({
               inicio: item.time,
@@ -94,22 +62,34 @@ export const sendData = async ({
             })),
           },
         },
-      }),
-    });
+      };
 
-    const body = await resp.text().catch(() => null);
+      const resp = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (!resp.ok) {
-      return { ok: false, status: resp.status, body };
+      const json = await resp.json().catch(() => null);
+
+      if (resp.ok && json?.success) {
+        console.log("Status code:", resp.status);
+        console.log("Response:", json);
+        return { ok: true, status: resp.status, body: json };
+      } else {
+        await new Promise((res) => setTimeout(res, interval));
+      }
+    } catch (err) {
+      console.warn(
+        `sendData: error consultando isReady - Retry ${i + 1}/${maxRetries}:`,
+        err
+      );
+      await new Promise((res) => setTimeout(res, interval));
     }
-
-    return { ok: true, status: resp.status, body };
-  } catch (err: unknown) {
-    if ((err as { name: string }).name === "AbortError") {
-      console.error("sendData: timeout de la solicitud");
-    } else {
-      console.error("sendData: error fetch", err);
-    }
-    return { ok: false };
   }
+
+  return { ok: false };
 };

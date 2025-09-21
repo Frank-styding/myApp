@@ -1,6 +1,4 @@
-// components/modals/ErrorModal.tsx
 import { Colors, Fonts } from "@/constants/constants";
-//import { useAppState } from "@/store/store";
 import {
   FlatList,
   Modal,
@@ -11,10 +9,9 @@ import {
   Dimensions,
 } from "react-native";
 import tw from "twrnc";
-//import { Header } from "../layout/home/Header";
-import { useState } from "react";
 import { normalize } from "@/lib/normalize";
 import { useModalContext } from "@/hooks/ModalProvider";
+import { useAppState } from "@/store/store";
 
 const { height } = Dimensions.get("screen");
 export const EndModal = ({
@@ -23,13 +20,18 @@ export const EndModal = ({
   onClick?: (value: string) => void;
 }) => {
   const { modals, hideModal } = useModalContext();
-  const [state, setState] = useState(0);
-  const [reason, setReason] = useState<string>();
+  const {
+    setEndReason: setReason,
+    endReason: reason,
+    setEndModalState: setState,
+    endModalState: state,
+  } = useAppState();
 
   const options = [
-    { label: "Fin de la Jornada", value: "fin de jornada" },
-    { label: "Tiempo Extra", value: "horas extras" },
-    { label: "Otro", value: "otro" },
+    { label: "Fin de la jornada", value: "fin de la jornada" },
+    { label: "Tiempo extra", value: "tiempo extra" },
+    { label: "Falta de materia prima", value: "materia prima" },
+    { label: "Otros", value: "otros" },
   ];
 
   const options1 = [
@@ -67,7 +69,12 @@ export const EndModal = ({
       setState(2);
     }
     if (state === 2) {
-      onClick?.(reason as string);
+      setState(0);
+      hideModal("end");
+      setReason(null);
+      setTimeout(() => {
+        onClick?.(reason as string);
+      }, 100);
     }
   };
 

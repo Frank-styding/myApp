@@ -14,7 +14,7 @@ export default function Index() {
   const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     checkFirstTime();
   }, []);
 
@@ -32,7 +32,7 @@ export default function Index() {
       console.error("Error checking first time:", error);
       setIsFirstTime(true);
     }
-  };
+  }; */
 
   const handleFinishOnboarding = async () => {
     try {
@@ -43,7 +43,7 @@ export default function Index() {
       router.replace("/login");
     }
   };
-  if (isFirstTime === null) {
+  /*   if (isFirstTime === null) {
     return (
       <SafeAreaView style={tw`flex-1 justify-center items-center gap-3`}>
         <Image
@@ -52,7 +52,7 @@ export default function Index() {
         />
       </SafeAreaView>
     );
-  }
+  } */
 
   return (
     <SafeAreaView style={tw`flex-1`}>

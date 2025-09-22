@@ -1,3 +1,4 @@
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Dimensions, useWindowDimensions } from "react-native";
 import {
@@ -8,6 +9,9 @@ import {
 } from "react-native-reanimated";
 const { width: screenWidth, height: screenHeight } = Dimensions.get("screen");
 export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
+  // Si usas React Navigation, importa useFocusEffect
+  // import { useFocusEffect } from '@react-navigation/native';
+
   /* const { width: screenWidth, height: screenHeight } = useWindowDimensions(); */
   const screenWidthSV = useSharedValue(screenWidth);
   const screenHeightSV = useSharedValue(screenHeight);
@@ -21,11 +25,23 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
   const x = useSharedValue(0);
   const y = useSharedValue(0);
 
+  // Método para reiniciar los valores animados y el estado
+  const resetAnimation = useCallback(() => {
+    width.value = widthInitial;
+    height.value = heightInitial;
+    opacity.value = 0;
+    opacity1.value = 1;
+    opacityView.value = 0;
+    x.value = 0;
+    y.value = 0;
+    setActive(false);
+    activeRef.current = false;
+  }, [widthInitial, heightInitial]);
+
   useEffect(() => {
     screenWidthSV.value = screenWidth;
     screenHeightSV.value = screenHeight;
   }, [screenWidthSV, screenHeightSV]);
-
   const animatedLogoStyle = useAnimatedStyle(() => {
     const centerX = screenWidthSV.value / 2 - width.value / 2;
     const centerY = screenHeightSV.value / 2 - height.value / 2;
@@ -36,22 +52,18 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
       top: centerY + y.value,
     };
   });
-
   const animatedLogoTitleStyle = useAnimatedStyle(() => ({
     position: "absolute",
     left: screenWidth / 2 - width.value / 2 + 10,
     top: screenHeight / 2 - height.value / 2,
     opacity: opacity.value,
   }));
-
   const animatedViewStyle = useAnimatedStyle(() => ({
     opacity: opacityView.value,
   }));
-
   const animatedLogo2Style = useAnimatedStyle(() => ({
     opacity: opacity1.value,
   }));
-
   const runStep = useCallback((index: number) => {
     if (index === 0) {
       x.value = withDelay(500, withTiming(-80, { duration: 200 }));
@@ -68,7 +80,6 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
         500,
         withTiming(heightInitial * 1.3, { duration: 500 })
       );
-
       setTimeout(() => runStep(2), 1300);
       activeRef.current = true;
     } else if (index === 2) {
@@ -87,20 +98,26 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
         500,
         withTiming(heightInitial * 0.8, { duration: 300 })
       );
-
       opacityView.value = withDelay(500, withTiming(1, { duration: 300 }));
-
       setTimeout(() => {
         setActive(true);
       }, 800);
       runStep(3);
     }
   }, []);
+  //Si usas React Navigation, descomenta esto para reiniciar la animación cada vez que la pantalla se enfoca
+  useFocusEffect(
+    useCallback(() => {
+      resetAnimation();
+      runStep(0);
+    }, [resetAnimation, runStep])
+  );
 
-  useEffect(() => {
+  // Si no usas React Navigation, mantén el useEffect para el montaje inicial
+  /* useEffect(() => {
+    resetAnimation();
     runStep(0);
-  }, []);
-
+  }, [resetAnimation, runStep]); */
   return {
     animatedLogoStyle,
     animatedLogoTitleStyle,
@@ -108,5 +125,6 @@ export function useAnimatedLogo(widthInitial: number, heightInitial: number) {
     activeRef,
     animatedLogo2Style,
     active,
+    resetAnimation,
   };
 }

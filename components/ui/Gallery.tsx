@@ -111,14 +111,14 @@ export const Gallery = ({
   };
 
   return (
-    <View style={tw`flex-1 gap-6`}>
+    <Animated.View style={tw`flex-1 gap-6`}>
       <Pressable style={{ flex: 9 }} onPress={handlePress}>
         <Animated.View style={[{ flex: 1 }, animatedStyle]}>
           {pages[page]}
         </Animated.View>
       </Pressable>
 
-      <View
+      <Animated.View
         style={{
           flex: 1,
           flexDirection: "row",
@@ -141,7 +141,7 @@ export const Gallery = ({
             }}
           />
         ))}
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 };

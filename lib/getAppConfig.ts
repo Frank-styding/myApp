@@ -26,6 +26,7 @@ export const getAppConfig = async () => {
       timestamp: Date.now(),
     }),
   });
+  //console.log(resp);
 
   const json = await resp.json();
 
